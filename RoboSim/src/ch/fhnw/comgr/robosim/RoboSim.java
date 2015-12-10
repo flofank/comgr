@@ -27,23 +27,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */package ch.fhnw.comgr.robosim;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.fhnw.ether.controller.IController;
+
+import ch.fhnw.ether.formats.obj.ObjReader;
 import ch.fhnw.ether.scene.DefaultScene;
 import ch.fhnw.ether.scene.IScene;
-import ch.fhnw.ether.scene.camera.Camera;
-import ch.fhnw.ether.scene.camera.ICamera;
 import ch.fhnw.ether.scene.light.DirectionalLight;
-import ch.fhnw.ether.scene.light.ILight;
 import ch.fhnw.ether.scene.mesh.IMesh;
-import ch.fhnw.ether.scene.mesh.MeshUtilities;
-import ch.fhnw.ether.scene.mesh.material.ShadedMaterial;
 import ch.fhnw.ether.view.IView;
 import ch.fhnw.ether.view.gl.DefaultView;
 import ch.fhnw.util.color.RGB;
+import ch.fhnw.util.math.Mat4;
 import ch.fhnw.util.math.Vec3;
 
 public final class RoboSim {
 	private static final RGB AMBIENT = RGB.BLACK;
 	private static final RGB COLOR = RGB.WHITE;
+	private float angle = 0;
+	private float speed = 0.3f;
 	
 	public static void main(String[] args) {
 		new RoboSim();
@@ -51,33 +57,60 @@ public final class RoboSim {
 
 	public RoboSim() {
 		// Create controller
-		RoboSimController controller = new RoboSimController();
+		final List<IMesh> meshes = new ArrayList<>();
+		double[] d={0,0,0,0,0,0,0,0};
+		double[] a={0,0,0,0,0,0,0,0};
+		RobotSolver R=new RobotSolver(d,a);
+		IController controller = new RoboSimController();
 		controller.run(time -> {
-			// Create view
-			IView view = new DefaultView(controller, 100, 100, 500, 500, IView.INTERACTIVE_VIEW, "RoboSim");
+			new DefaultView(controller, 0, 10, 512, 512, IView.INTERACTIVE_VIEW, "Robot Simulation");
 	
-			// Create scene
 			IScene scene = new DefaultScene(controller);
 			controller.setScene(scene);
+			
+			scene.add3DObject(new DirectionalLight(new Vec3(0, 0, 1), RGB.BLACK, RGB.RED));
+			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.5), RGB.BLACK, RGB.BLUE));
 	
-			// Create and add camera
-			ICamera camera = new Camera(new Vec3(0, -5, 5), Vec3.ZERO);
-			scene.add3DObject(camera);
-			controller.setCamera(view, camera);
-			
-			
-			// Add first light and light geometry
-			ILight light = new DirectionalLight(Vec3.Z, AMBIENT, COLOR);
-			light.setPosition(new Vec3(0, 0, 2));
-			controller.setLight(light);
-			scene.add3DObject(light);
-			
-			// Add cube
-			scene.add3DObject(MeshUtilities.createGroundPlane());
-			
-			IMesh cube = MeshUtilities.createCube(new ShadedMaterial(RGB.BLACK, RGB.BLUE, RGB.GRAY, RGB.WHITE, 10, 1, 1f));
-			controller.setCube(cube);
-			scene.add3DObject(cube);
+			try {
+				final URL obj = RoboSim.class.getResource("s.obj");
+				//final URL obj = new URL("file:///Users/radar/Desktop/aventador/aventador_red.obj");
+				//final URL obj = new URL("file:///Users/radar/Desktop/demopolis/berlin_mitte_o2_o3/o2_small.obj");
+				
+				new ObjReader(obj).getMeshes().forEach(mesh -> meshes.add(mesh));
+				System.out.println("number of meshes before merging: " + meshes.size());
+				//final List<IMesh> merged = MeshUtilities.mergeMeshes(meshes);
+				//System.out.println("number of meshes after merging: " + merged.size());
+				//double[] d={270*(Math.PI/180),0,90*(Math.PI/180),270*(Math.PI/180),90*(Math.PI/180),0};
+				IMesh tmp1=meshes.get(3);
+				IMesh tmp2=meshes.get(4);
+				IMesh tmp3=meshes.get(5);
+				IMesh tmp4=meshes.get(0);
+				IMesh tmp5=meshes.get(1);
+				IMesh tmp0=meshes.get(2);
+				meshes.set(0,tmp0);
+				meshes.set(1,tmp1);
+				meshes.set(2,tmp2);
+				meshes.set(3,tmp3);
+				meshes.set(4,tmp4);
+				meshes.set(5,tmp5);
+				
+				
+				scene.add3DObjects(meshes);
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		});
+		controller.animate((time, interval) -> {
+            angle += 2*speed;
+           
+            List<Mat4> T=R.solve(angle);
+            for(int i=1;i<T.size();i++){
+            	
+				meshes.get(i).setTransform(T.get(i));
+				
+			}
+           
+        });
 	}
 }
