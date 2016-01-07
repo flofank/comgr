@@ -27,29 +27,30 @@
  */
 package ch.fhnw.comgr.robosim;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 import ch.fhnw.ether.controller.DefaultController;
 import ch.fhnw.ether.controller.event.IKeyEvent;
-import ch.fhnw.ether.scene.camera.ICamera;
+import ch.fhnw.ether.controller.tool.ITool;
+import ch.fhnw.ether.scene.I3DObject;
 import ch.fhnw.ether.scene.light.ILight;
 import ch.fhnw.ether.scene.mesh.IMesh;
-import ch.fhnw.util.math.Mat4;
+import ch.fhnw.ether.scene.mesh.MeshUtilities;
+import ch.fhnw.ether.scene.mesh.material.ShadedMaterial;
+import ch.fhnw.util.color.RGB;
 import ch.fhnw.util.math.Vec3;
 
 public class RoboSimController extends DefaultController {
 	private static final float INC_XY = 0.25f;
 	private static final float INC_Z = 0.25f;
-	private IMesh cube;
-	private float angle = 0;
+	private List<IMesh> meshes = new ArrayList<>();
 	private ILight light;
-
+	
 	@Override
 	public void keyPressed(IKeyEvent e) {
 		switch (e.getKeyCode()) {
-		case IKeyEvent.VK_RIGHT:
-		case IKeyEvent.VK_LEFT:
-			angle += e.getKeySym() - IKeyEvent.VK_UP;
-			cube.setTransform(Mat4.rotate(angle, Vec3.Z));
-			break;
 		case IKeyEvent.VK_W:
 			light.setPosition(light.getPosition().add(Vec3.Y.scale(INC_XY)));
 			break;
@@ -62,16 +63,41 @@ public class RoboSimController extends DefaultController {
 		case IKeyEvent.VK_D:
 			light.setPosition(light.getPosition().add(Vec3.X.scale(INC_XY)));
 			break;
+		case IKeyEvent.VK_N:
+			System.out.println("adding cube");
+			IMesh cube = MeshUtilities.createCube(new ShadedMaterial(RGB.BLACK, RGB.BLUE, RGB.GRAY, RGB.WHITE, 10, 1, 1f));
+			meshes.add(cube);
+			getScene().add3DObject(cube);
+			break;
+		case IKeyEvent.VK_P:
+			ITool tool = new PositioningTool(this);
+			setCurrentTool(tool);
+			System.out.println("Started Positioningtool");
+			break;
 		default:
 			super.keyPressed(e);
 		}
 	}
 	
-	public void setCube(IMesh cube) {
-		this.cube = cube;
+	public void addCube() {
+		IMesh cube = MeshUtilities.createCube(new ShadedMaterial(RGB.BLACK, RGB.BLUE, RGB.GRAY, RGB.WHITE, 10, 1, 1f));
+		meshes.add(cube);
+		getScene().add3DObject(cube);
 	}
 
 	public void setLight(ILight light) {
 		this.light = light;
+	}
+	
+	public void moveObject(I3DObject obj, Vec3 pos) {
+		
+	}
+
+	public boolean obstructed(I3DObject obj) {
+		boolean obstructed = false;
+		for (IMesh mesh : meshes) {
+			obstructed = obstructed || (mesh.getBounds().intersects(obj.getBounds()) && mesh != obj);
+		}
+		return obstructed;
 	}
 }

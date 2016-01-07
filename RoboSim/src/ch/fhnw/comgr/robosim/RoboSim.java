@@ -43,6 +43,7 @@ import ch.fhnw.ether.view.IView;
 import ch.fhnw.ether.view.gl.DefaultView;
 import ch.fhnw.util.color.RGB;
 import ch.fhnw.util.math.Mat4;
+import ch.fhnw.util.math.Vec2;
 import ch.fhnw.util.math.Vec3;
 
 public final class RoboSim {
@@ -71,6 +72,14 @@ public final class RoboSim {
 			scene.add3DObject(new DirectionalLight(new Vec3(0, 0, 1), RGB.BLACK, RGB.RED));
 			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.5), RGB.BLACK, RGB.BLUE));
 	
+			// Add floor
+			scene.add3DObject(RoboSimMeshUtilities.createFloor(new Vec2(-15, -15), new Vec2(15, 15), 3));
+			// Add walls
+			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-15, -15, 0), new Vec3(15, -15, 5), 5));
+			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-15, 15, 0), new Vec3(15, 15, 5), 5));
+			scene.add3DObject(RoboSimMeshUtilities.createWallY(new Vec3(-15, -15, 0), new Vec3(-15, 15, 5), 5));
+			scene.add3DObject(RoboSimMeshUtilities.createWallY(new Vec3(15, -15, 0), new Vec3(15, 15, 5), 5));
+			
 			try {
 				final URL obj = RoboSim.class.getResource("s.obj");
 				//final URL obj = new URL("file:///Users/radar/Desktop/aventador/aventador_red.obj");
