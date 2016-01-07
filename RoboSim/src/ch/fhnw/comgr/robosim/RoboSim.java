@@ -71,7 +71,7 @@ public final class RoboSim {
 			
 			scene.add3DObject(new DirectionalLight(new Vec3(0, 0, 1), RGB.BLACK, RGB.RED));
 			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.5), RGB.BLACK, RGB.BLUE));
-	
+
 			// Add floor
 			scene.add3DObject(RoboSimMeshUtilities.createFloor(new Vec2(-15, -15), new Vec2(15, 15), 3));
 			// Add walls
@@ -91,12 +91,18 @@ public final class RoboSim {
 				//System.out.println("number of meshes after merging: " + merged.size());
 				//double[] d={270*(Math.PI/180),0,90*(Math.PI/180),270*(Math.PI/180),90*(Math.PI/180),0};
 				IMesh tmp1=meshes.get(3);
-				IMesh tmp2=meshes.get(4);
-				IMesh tmp3=meshes.get(5);
-				IMesh tmp4=meshes.get(0);
-				IMesh tmp5=meshes.get(1);
-				IMesh tmp0=meshes.get(2);
-				meshes.set(0,tmp0);
+                tmp1.setName("robot1");
+                IMesh tmp2=meshes.get(4);
+                tmp2.setName("robot2");
+                IMesh tmp3=meshes.get(5);
+                tmp3.setName("robot3");
+                IMesh tmp4=meshes.get(0);
+                tmp4.setName("robot4");
+                IMesh tmp5=meshes.get(1);
+                tmp5.setName("robot5");
+                IMesh tmp0=meshes.get(2);
+                tmp0.setName("robot6");
+                meshes.set(0,tmp0);
 				meshes.set(1,tmp1);
 				meshes.set(2,tmp2);
 				meshes.set(3,tmp3);
@@ -105,21 +111,21 @@ public final class RoboSim {
 				
 				
 				scene.add3DObjects(meshes);
-				
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		});
-		controller.animate((time, interval) -> {
-            angle += 2*speed;
-           
-            List<Mat4> T=R.solve(angle);
-            for(int i=1;i<T.size();i++){
-            	
-				meshes.get(i).setTransform(T.get(i));
-				
-			}
-           
-        });
+//		controller.animate((time, interval) -> {
+//            angle += 2*speed;
+//
+//            List<Mat4> T=R.solve(angle);
+//            for(int i=1;i<T.size();i++){
+//
+//				meshes.get(i).setTransform(T.get(i));
+//
+//			}
+//
+//        });
 	}
 }

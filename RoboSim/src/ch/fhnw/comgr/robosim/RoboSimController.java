@@ -40,6 +40,7 @@ import ch.fhnw.ether.scene.mesh.IMesh;
 import ch.fhnw.ether.scene.mesh.MeshUtilities;
 import ch.fhnw.ether.scene.mesh.material.ShadedMaterial;
 import ch.fhnw.util.color.RGB;
+import ch.fhnw.util.math.Mat4;
 import ch.fhnw.util.math.Vec3;
 
 public class RoboSimController extends DefaultController {
@@ -47,36 +48,65 @@ public class RoboSimController extends DefaultController {
 	private static final float INC_Z = 0.25f;
 	private List<IMesh> meshes = new ArrayList<>();
 	private ILight light;
+
+    // 2do: state im controller?
+    private int angle_bottom = 0;
+    private int angle_mid1 = 0;
+    private int angle_mid2 = 0;
+
+    private float reso_axis_bottom = 4;
+    private float reso_axis_mid1 = 1;
+    private float reso_axis_mid2 = 1;
+
+//    IKEngine ik;
+
+    public RoboSimController() {
+//        ik = new IKEngine(3);
+//        ik.setLinkLength(0, );
+    }
 	
 	@Override
 	public void keyPressed(IKeyEvent e) {
 		switch (e.getKeyCode()) {
-		case IKeyEvent.VK_W:
-			light.setPosition(light.getPosition().add(Vec3.Y.scale(INC_XY)));
-			break;
-		case IKeyEvent.VK_S:
-			light.setPosition(light.getPosition().add(Vec3.Y_NEG.scale(INC_XY)));
-			break;
-		case IKeyEvent.VK_A:
-			light.setPosition(light.getPosition().add(Vec3.X_NEG.scale(INC_XY)));
-			break;
-		case IKeyEvent.VK_D:
-			light.setPosition(light.getPosition().add(Vec3.X.scale(INC_XY)));
-			break;
-		case IKeyEvent.VK_N:
-			System.out.println("adding cube");
-			IMesh cube = MeshUtilities.createCube(new ShadedMaterial(RGB.BLACK, RGB.BLUE, RGB.GRAY, RGB.WHITE, 10, 1, 1f));
-			meshes.add(cube);
-			getScene().add3DObject(cube);
-			break;
-		case IKeyEvent.VK_P:
-			ITool tool = new PositioningTool(this);
-			setCurrentTool(tool);
-			System.out.println("Started Positioningtool");
-			break;
-		default:
-			super.keyPressed(e);
-		}
+            case IKeyEvent.VK_RIGHT:
+                rotateBottom(reso_axis_bottom);
+                break;
+            case IKeyEvent.VK_LEFT:
+                rotateBottom(-reso_axis_bottom);
+                break;
+//            case IKeyEvent.VK_UP:
+//                rotateMid1(reso_axis_mid1);
+//                break;
+//            case IKeyEvent.VK_DOWN:
+//                rotateMid1(-reso_axis_mid1);
+//                break;
+
+            case IKeyEvent.VK_W:
+                light.setPosition(light.getPosition().add(Vec3.Y.scale(INC_XY)));
+                break;
+            case IKeyEvent.VK_S:
+                light.setPosition(light.getPosition().add(Vec3.Y_NEG.scale(INC_XY)));
+                break;
+            case IKeyEvent.VK_A:
+                light.setPosition(light.getPosition().add(Vec3.X_NEG.scale(INC_XY)));
+                break;
+            case IKeyEvent.VK_D:
+                light.setPosition(light.getPosition().add(Vec3.X.scale(INC_XY)));
+                break;
+            case IKeyEvent.VK_N:
+                System.out.println("adding cube");
+                IMesh cube = MeshUtilities.createCube(new ShadedMaterial(RGB.BLACK, RGB.BLUE, RGB.GRAY, RGB.WHITE, 10, 1, 1f));
+                meshes.add(cube);
+                getScene().add3DObject(cube);
+                break;
+            case IKeyEvent.VK_P:
+                ITool tool = new PositioningTool(this);
+                setCurrentTool(tool);
+                System.out.println("Started Positioningtool");
+                break;
+            default:
+                super.keyPressed(e);
+            }
 	}
 	
 	public void addCube() {
@@ -100,4 +130,58 @@ public class RoboSimController extends DefaultController {
 		}
 		return obstructed;
 	}
+
+    private void rotateBottom(float delta) {
+        Mat4 transform = Mat4.rotate(angle_bottom+=delta, Vec3.Z);
+        List<IMesh> meshes = getRobotMeshes();
+        for (IMesh m :  meshes) {
+            if (meshes.indexOf(m) != 0) {
+                m.setTransform(transform);
+            }
+        }
+    }
+
+    private void rotateMid1(float delta) {
+//        Mat4 transform = Mat4.multiply(Mat4.translate(0, 0, 0.273f), Mat4.rotate(angle_bottom+=delta, Vec3.Y));
+        Mat4 transform = Mat4.rotate(angle_bottom+=delta, Vec3.Y);
+        List<IMesh> meshes = getRobotMeshes();
+//        meshes.get(3).getGeometry().getAttributes()
+        for (IMesh m :  meshes) {
+            if (meshes.indexOf(m) > 2) {
+                m.setTransform(transform);
+            }
+
+        }
+    }
+
+    private void rotateMid2(float delta) {
+        List<IMesh> meshes = getRobotMeshes();
+        for (IMesh m :  meshes) {
+            if (meshes.indexOf(m) > 1) {
+                m.setTransform(Mat4.rotate(angle_mid2+=delta, Vec3.Z));
+            }
+
+        }
+    }
+
+    private List<IMesh> getRobotMeshes() {
+        List<IMesh> robotParts = new ArrayList<>();
+        for (IMesh m : getScene().getMeshes()) {
+            if (m.getName().substring(0, 5).equals("robot"))  {
+                robotParts.add(m);
+            }
+        }
+
+
+        System.out.println(robotParts.size());
+        return robotParts;
+    }
+
+    public void setResolutionAll(float reso) {
+        reso_axis_bottom = reso;
+        reso_axis_mid1 = reso;
+        reso_axis_mid2 = reso;
+    }
+
+
 }
