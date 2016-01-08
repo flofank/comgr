@@ -19,62 +19,46 @@ public class RobotTool extends AbstractTool {
 	@Override
 	public void keyPressed(IKeyEvent e) {
 		switch (e.getKeyCode()) {
-	    case IKeyEvent.VK_Q:
-	    	robot.rotate(5, 1);
-	    	break;
-	    case IKeyEvent.VK_A:
-	    	robot.rotate(5, -1);
-	    	break;
-	    case IKeyEvent.VK_W:
-	    	robot.rotate(4, 1);
-	    	break;
-	    case IKeyEvent.VK_S:
-	    	robot.rotate(4, -1);
-	    	break;
-	    case IKeyEvent.VK_E:
-	    	robot.rotate(3, 1);
-	    	break;
-	    case IKeyEvent.VK_D:
-	    	robot.rotate(3, -1);
-	    	break;
-	    case IKeyEvent.VK_R:
-	    	robot.rotate(2, 1);
-	    	break;
-	    case IKeyEvent.VK_F:
-	    	robot.rotate(2, -1);
-	    	break;
-	    case IKeyEvent.VK_T:
-	    	robot.rotate(1, 1);
-	    	break;
-	    case IKeyEvent.VK_G:
-	    	robot.rotate(1, -1);
-	    	break;
-	    case IKeyEvent.VK_Z:
-	    	robot.rotate(0, 1);
-	    	break;
-	    case IKeyEvent.VK_H:
-	    	robot.rotate(0, -1);
-	    	break;
-	    case IKeyEvent.VK_SPACE:
-	    	robot.reset();
-		default:
-			super.keyPressed(e);
-	}
-//		switch (e.getKeyCode()) {
-//		    case IKeyEvent.VK_RIGHT:
-//		        controller.rotateBottom(reso_axis_bottom);
-//		        break;
-//		    case IKeyEvent.VK_LEFT:
-//		        controller.rotateBottom(-reso_axis_bottom);
-//		        break;
-//		    case IKeyEvent.VK_UP:
-//		        controller.rotateMid1(reso_axis_bottom);
-//		        break;
-//		    case IKeyEvent.VK_DOWN:
-//		        controller.rotateMid1(-reso_axis_bottom);
-//		        break;
-//			default:
-//				super.keyPressed(e);
-//		}
-	}
+		    case IKeyEvent.VK_Q:
+		    	robot.rotate(5, 1);
+		    	break;
+		    case IKeyEvent.VK_A:
+		    	robot.rotate(5, -1);
+		    	break;
+		    case IKeyEvent.VK_W:
+		    	robot.rotate(4, 1);
+		    	break;
+		    case IKeyEvent.VK_S:
+		    	robot.rotate(4, -1);
+		    	break;
+		    case IKeyEvent.VK_E:
+		    	robot.rotate(3, 1);
+		    	break;
+		    case IKeyEvent.VK_D:
+		    	robot.rotate(3, -1);
+		    	break;
+		    case IKeyEvent.VK_R:
+		    	robot.rotate(2, 1);
+		    	break;
+		    case IKeyEvent.VK_F:
+		    	robot.rotate(2, -1);
+		    	break;
+		    case IKeyEvent.VK_T:
+		    	robot.rotate(1, 1);
+		    	break;
+		    case IKeyEvent.VK_G:
+		    	robot.rotate(1, -1);
+		    	break;
+		    case IKeyEvent.VK_Z:
+		    	robot.rotate(0, 1);
+		    	break;
+		    case IKeyEvent.VK_H:
+		    	robot.rotate(0, -1);
+		    	break;
+		    case IKeyEvent.VK_SPACE:
+		    	robot.reset();
+			default:
+				super.keyPressed(e);
+		}
+		}
 }
