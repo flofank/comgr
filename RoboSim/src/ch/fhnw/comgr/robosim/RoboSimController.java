@@ -27,10 +27,12 @@
  */
 package ch.fhnw.comgr.robosim;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import ch.fhnw.comgr.robosim.tools.PositioningTool;
+import ch.fhnw.comgr.robosim.tools.RobotTool;
 import ch.fhnw.ether.controller.DefaultController;
 import ch.fhnw.ether.controller.event.IKeyEvent;
 import ch.fhnw.ether.controller.tool.ITool;
@@ -39,6 +41,7 @@ import ch.fhnw.ether.scene.light.ILight;
 import ch.fhnw.ether.scene.mesh.IMesh;
 import ch.fhnw.ether.scene.mesh.MeshUtilities;
 import ch.fhnw.ether.scene.mesh.material.ShadedMaterial;
+import ch.fhnw.ether.ui.Button;
 import ch.fhnw.util.color.RGB;
 import ch.fhnw.util.math.Mat4;
 import ch.fhnw.util.math.Vec3;
@@ -54,33 +57,22 @@ public class RoboSimController extends DefaultController {
     private int angle_mid1 = 0;
     private int angle_mid2 = 0;
 
-    private float reso_axis_bottom = 4;
     private float reso_axis_mid1 = 1;
     private float reso_axis_mid2 = 1;
+    
+    private ITool positioningTool;
+    private ITool robotTool;
 
 //    IKEngine ik;
 
     public RoboSimController() {
-//        ik = new IKEngine(3);
-//        ik.setLinkLength(0, );
+        positioningTool = new PositioningTool(this);
+        robotTool = new RobotTool(this);
     }
 	
 	@Override
 	public void keyPressed(IKeyEvent e) {
 		switch (e.getKeyCode()) {
-            case IKeyEvent.VK_RIGHT:
-                rotateBottom(reso_axis_bottom);
-                break;
-            case IKeyEvent.VK_LEFT:
-                rotateBottom(-reso_axis_bottom);
-                break;
-//            case IKeyEvent.VK_UP:
-//                rotateMid1(reso_axis_mid1);
-//                break;
-//            case IKeyEvent.VK_DOWN:
-//                rotateMid1(-reso_axis_mid1);
-//                break;
-
             case IKeyEvent.VK_W:
                 light.setPosition(light.getPosition().add(Vec3.Y.scale(INC_XY)));
                 break;
@@ -93,20 +85,16 @@ public class RoboSimController extends DefaultController {
             case IKeyEvent.VK_D:
                 light.setPosition(light.getPosition().add(Vec3.X.scale(INC_XY)));
                 break;
-            case IKeyEvent.VK_N:
-                System.out.println("adding cube");
-                IMesh cube = MeshUtilities.createCube(new ShadedMaterial(RGB.BLACK, RGB.BLUE, RGB.GRAY, RGB.WHITE, 10, 1, 1f));
-                meshes.add(cube);
-                getScene().add3DObject(cube);
-                break;
-            case IKeyEvent.VK_P:
-                ITool tool = new PositioningTool(this);
-                setCurrentTool(tool);
-                System.out.println("Started Positioningtool");
-                break;
             default:
                 super.keyPressed(e);
             }
+	}
+
+	public void initButtons() {
+		getUI().addWidget(new Button(0, 3, "Quit", "Quit", KeyEvent.VK_ESCAPE, (button, v) -> System.exit(0)));
+		getUI().addWidget(new Button(0, 2, "Positioning", "PositioningTool", KeyEvent.VK_P, (button, v) -> setCurrentTool(positioningTool)));
+		getUI().addWidget(new Button(0, 1, "Robot", "RoboterControl", KeyEvent.VK_R, (button, v) -> setCurrentTool(robotTool)));
+		getUI().addWidget(new Button(0, 0, "Add Cube", "Add Cube", KeyEvent.VK_R, (button, v) -> addCube()));
 	}
 	
 	public void addCube() {
@@ -131,7 +119,7 @@ public class RoboSimController extends DefaultController {
 		return obstructed;
 	}
 
-    private void rotateBottom(float delta) {
+    public void rotateBottom(float delta) {
         Mat4 transform = Mat4.rotate(angle_bottom+=delta, Vec3.Z);
         List<IMesh> meshes = getRobotMeshes();
         for (IMesh m :  meshes) {
@@ -178,10 +166,11 @@ public class RoboSimController extends DefaultController {
     }
 
     public void setResolutionAll(float reso) {
-        reso_axis_bottom = reso;
+//        reso_axis_bottom = reso;
         reso_axis_mid1 = reso;
         reso_axis_mid2 = reso;
     }
+
 
 
 }

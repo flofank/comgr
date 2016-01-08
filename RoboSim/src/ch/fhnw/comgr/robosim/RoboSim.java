@@ -27,6 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */package ch.fhnw.comgr.robosim;
 
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,8 +38,11 @@ import ch.fhnw.ether.controller.IController;
 import ch.fhnw.ether.formats.obj.ObjReader;
 import ch.fhnw.ether.scene.DefaultScene;
 import ch.fhnw.ether.scene.IScene;
+import ch.fhnw.ether.scene.camera.Camera;
+import ch.fhnw.ether.scene.camera.ICamera;
 import ch.fhnw.ether.scene.light.DirectionalLight;
 import ch.fhnw.ether.scene.mesh.IMesh;
+import ch.fhnw.ether.ui.Button;
 import ch.fhnw.ether.view.IView;
 import ch.fhnw.ether.view.gl.DefaultView;
 import ch.fhnw.util.color.RGB;
@@ -62,12 +66,18 @@ public final class RoboSim {
 		double[] d={0,0,0,0,0,0,0,0};
 		double[] a={0,0,0,0,0,0,0,0};
 		RobotSolver R=new RobotSolver(d,a);
-		IController controller = new RoboSimController();
+		RoboSimController controller = new RoboSimController();
 		controller.run(time -> {
-			new DefaultView(controller, 0, 10, 512, 512, IView.INTERACTIVE_VIEW, "Robot Simulation");
+			// Create view
+			IView view = new DefaultView(controller, 50, 50, 512, 512, IView.INTERACTIVE_VIEW, "Robot Simulation");
 	
 			IScene scene = new DefaultScene(controller);
 			controller.setScene(scene);
+			
+			// Create and add camera
+			ICamera camera = new Camera(new Vec3(-5, -5, 2), Vec3.ZERO);
+			scene.add3DObject(camera);
+			controller.setCamera(view, camera);
 			
 			scene.add3DObject(new DirectionalLight(new Vec3(0, 0, 1), RGB.BLACK, RGB.RED));
 			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.5), RGB.BLACK, RGB.BLUE));
@@ -115,6 +125,7 @@ public final class RoboSim {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			controller.initButtons();
 		});
 //		controller.animate((time, interval) -> {
 //            angle += 2*speed;

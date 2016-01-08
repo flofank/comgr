@@ -1,7 +1,8 @@
-package ch.fhnw.comgr.robosim;
+package ch.fhnw.comgr.robosim.tools;
 
 import java.util.Map;
 
+import ch.fhnw.comgr.robosim.RoboSimController;
 import ch.fhnw.ether.controller.event.IKeyEvent;
 import ch.fhnw.ether.controller.event.IPointerEvent;
 import ch.fhnw.ether.controller.tool.ITool;
@@ -52,8 +53,7 @@ public class PositioningTool extends PickTool {
 	
 	@Override
 	public void pointerPressed(IPointerEvent e) {
-		pick = pick(e);
-		System.out.println("picked " + pick);
+		pick(e);
 	}
 	
 	@Override
@@ -73,14 +73,13 @@ public class PositioningTool extends PickTool {
 		}
 	}
 	
-	private I3DObject pick(IPointerEvent e) {
+	private void pick(IPointerEvent e) {
 		int x = e.getX();
 		int y = e.getY();
 		Map<Float, I3DObject> pickables = PickUtilities.pickFromScene(PickMode.POINT, x, y, 0, 0, e.getView());
-		if (pickables.isEmpty()) {
-			return null;
-		} else {
-			return pickables.values().iterator().next();
+		if (!pickables.isEmpty()) {
+			pick = pickables.values().iterator().next();
+			controller.getUI().setMessage(pick.getName());
 		}
 	}
 
