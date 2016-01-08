@@ -15,6 +15,7 @@ public class Robot {
 	private List<IMesh> parts;
 	private List<Mat4> rotations;
 	private List<Vec3> rotationAxes;
+	private List<Vec3> preRotationTranslations;
 	
 	private Robot() {
 		try {
@@ -47,18 +48,31 @@ public class Robot {
 		// Init rotations matrixes
 		rotations = new ArrayList<>();
 		rotationAxes = new ArrayList<>();
+		preRotationTranslations = new ArrayList<>();
+		// Part 0
 		rotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Z);
+		preRotationTranslations.add(Vec3.ZERO);
+		// Part 1
 		rotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Z);
+		preRotationTranslations.add(Vec3.ZERO);
+		// Part 2
+		rotations.add(Mat4.ID);
+		rotationAxes.add(Vec3.Z);
+		preRotationTranslations.add(Vec3.ZERO);
+		// Part 3
 		rotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Y);
-		rotations.add(Mat4.ID);
-		rotationAxes.add(Vec3.Z);
+		preRotationTranslations.add(new Vec3(0, 0, 0.4));
+		// Part 4
 		rotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Y);
+		preRotationTranslations.add(new Vec3(0, 0, 0.75));
+		// Part 5
 		rotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Z);
+		preRotationTranslations.add(new Vec3(0, 0, 0));
 	}
 	
 	public List<IMesh> getMeshes() {
@@ -70,7 +84,15 @@ public class Robot {
 	}
 
 	public void rotate(int part, int angle) {
-		rotations.set(part, rotations.get(part).postMultiply(Mat4.rotate(angle, rotationAxes.get(part))));
+		Mat4 newRot = rotations.get(part);
+		newRot = newRot.postMultiply(Mat4.translate(preRotationTranslations.get(part).scale(1)));
+		newRot = newRot.postMultiply(Mat4.rotate(angle, rotationAxes.get(part)));
+		newRot = newRot.postMultiply(Mat4.translate(preRotationTranslations.get(part).scale(-1)));
+		rotations.set(part, newRot);
+		recalcRotations();
+	}
+	
+	private void recalcRotations() {
 		for (int p = 0; p < parts.size(); p++) {
 			Mat4 rot = Mat4.ID;
 			for (int r = 0; r <= p; r++) {
@@ -78,5 +100,12 @@ public class Robot {
 			}
 			parts.get(p).setTransform(rot);
 		}
+	}
+
+	public void reset() {
+		for (int i = 0; i < rotations.size(); i++) {
+			rotations.set(i, Mat4.ID);
+		}
+		recalcRotations();
 	}
 }

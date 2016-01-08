@@ -55,6 +55,8 @@ public class RobotTool extends AbstractTool {
 	    case IKeyEvent.VK_H:
 	    	robot.rotate(0, -1);
 	    	break;
+	    case IKeyEvent.VK_SPACE:
+	    	robot.reset();
 		default:
 			super.keyPressed(e);
 	}
