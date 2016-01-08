@@ -62,29 +62,30 @@ public class RoboSimController extends DefaultController {
     
     private ITool positioningTool;
     private ITool robotTool;
+    
+    private Robot robot;
 
 //    IKEngine ik;
 
     public RoboSimController() {
         positioningTool = new PositioningTool(this);
-        robotTool = new RobotTool(this);
     }
 	
 	@Override
 	public void keyPressed(IKeyEvent e) {
 		switch (e.getKeyCode()) {
-            case IKeyEvent.VK_W:
-                light.setPosition(light.getPosition().add(Vec3.Y.scale(INC_XY)));
-                break;
-            case IKeyEvent.VK_S:
-                light.setPosition(light.getPosition().add(Vec3.Y_NEG.scale(INC_XY)));
-                break;
-            case IKeyEvent.VK_A:
-                light.setPosition(light.getPosition().add(Vec3.X_NEG.scale(INC_XY)));
-                break;
-            case IKeyEvent.VK_D:
-                light.setPosition(light.getPosition().add(Vec3.X.scale(INC_XY)));
-                break;
+//            case IKeyEvent.VK_W:
+//                light.setPosition(light.getPosition().add(Vec3.Y.scale(INC_XY)));
+//                break;
+//            case IKeyEvent.VK_S:
+//                light.setPosition(light.getPosition().add(Vec3.Y_NEG.scale(INC_XY)));
+//                break;
+//            case IKeyEvent.VK_A:
+//                light.setPosition(light.getPosition().add(Vec3.X_NEG.scale(INC_XY)));
+//                break;
+//            case IKeyEvent.VK_D:
+//                light.setPosition(light.getPosition().add(Vec3.X.scale(INC_XY)));
+//                break;
             default:
                 super.keyPressed(e);
             }
@@ -95,6 +96,12 @@ public class RoboSimController extends DefaultController {
 		getUI().addWidget(new Button(0, 2, "Positioning", "PositioningTool", KeyEvent.VK_P, (button, v) -> setCurrentTool(positioningTool)));
 		getUI().addWidget(new Button(0, 1, "Robot", "RoboterControl", KeyEvent.VK_R, (button, v) -> setCurrentTool(robotTool)));
 		getUI().addWidget(new Button(0, 0, "Add Cube", "Add Cube", KeyEvent.VK_R, (button, v) -> addCube()));
+	}
+
+	public void initRobot() {
+		robot = Robot.getInstance(); 
+		robotTool = new RobotTool(this, robot);
+		getScene().add3DObjects(robot.getMeshes());
 	}
 	
 	public void addCube() {
@@ -129,7 +136,7 @@ public class RoboSimController extends DefaultController {
         }
     }
 
-    private void rotateMid1(float delta) {
+    public void rotateMid1(float delta) {
 //        Mat4 transform = Mat4.multiply(Mat4.translate(0, 0, 0.273f), Mat4.rotate(angle_bottom+=delta, Vec3.Y));
         Mat4 transform = Mat4.rotate(angle_bottom+=delta, Vec3.Y);
         List<IMesh> meshes = getRobotMeshes();
@@ -170,6 +177,7 @@ public class RoboSimController extends DefaultController {
         reso_axis_mid1 = reso;
         reso_axis_mid2 = reso;
     }
+
 
 
 
