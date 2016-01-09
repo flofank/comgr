@@ -19,44 +19,53 @@ public class RobotTool extends AbstractTool {
 	@Override
 	public void keyPressed(IKeyEvent e) {
 		switch (e.getKeyCode()) {
-		    case IKeyEvent.VK_Q:
-		    	robot.rotate(5, 1);
-		    	break;
 		    case IKeyEvent.VK_A:
-		    	robot.rotate(5, -1);
+		    	robot.rotate(6, 1);
 		    	break;
-		    case IKeyEvent.VK_W:
-		    	robot.rotate(4, 1);
+		    case IKeyEvent.VK_Y:
+		    case IKeyEvent.VK_Z:
+		    	robot.rotate(6, -1);
 		    	break;
 		    case IKeyEvent.VK_S:
-		    	robot.rotate(4, -1);
+		    	robot.rotate(5, 1);
 		    	break;
-		    case IKeyEvent.VK_E:
-		    	robot.rotate(3, 1);
+		    case IKeyEvent.VK_X:
+		    	robot.rotate(5, -1);
 		    	break;
 		    case IKeyEvent.VK_D:
-		    	robot.rotate(3, -1);
+		    	robot.rotate(4, 1);
 		    	break;
-		    case IKeyEvent.VK_R:
-		    	robot.rotate(2, 1);
+		    case IKeyEvent.VK_C:
+		    	robot.rotate(4, -1);
 		    	break;
 		    case IKeyEvent.VK_F:
-		    	robot.rotate(2, -1);
+		    	robot.rotate(3, 1);
 		    	break;
-		    case IKeyEvent.VK_T:
-		    	robot.rotate(1, 1);
+		    case IKeyEvent.VK_V:
+		    	robot.rotate(3, -1);
 		    	break;
 		    case IKeyEvent.VK_G:
-		    	robot.rotate(1, -1);
+		    	robot.rotate(2, 1);
 		    	break;
-		    case IKeyEvent.VK_Z:
-		    	robot.rotate(0, 1);
+		    case IKeyEvent.VK_B:
+		    	robot.rotate(2, -1);
 		    	break;
 		    case IKeyEvent.VK_H:
-		    	robot.rotate(0, -1);
+		    	robot.rotate(1, 1);
 		    	break;
+		    case IKeyEvent.VK_N:
+		    	robot.rotate(1, -1);
+		    	break;
+		    	// Foot can't be moved
+//		    case IKeyEvent.VK_J:
+//		    	robot.rotate(0, 1);
+//		    	break;
+//		    case IKeyEvent.VK_M:
+//		    	robot.rotate(0, -1);
+//		    	break;
 		    case IKeyEvent.VK_SPACE:
 		    	robot.reset();
+		    	break;
 			default:
 				super.keyPressed(e);
 		}

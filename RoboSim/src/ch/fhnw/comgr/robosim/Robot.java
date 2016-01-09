@@ -23,25 +23,15 @@ public class Robot {
 			
 			ObjReader or = new ObjReader(obj);
 			List<IMesh> meshes = or.getMeshes();
-			IMesh tmp1=meshes.get(3);
-            tmp1.setName("robot1");
-            IMesh tmp2=meshes.get(4);
-            tmp2.setName("robot2");
-            IMesh tmp3=meshes.get(5);
-            tmp3.setName("robot3");
-            IMesh tmp4=meshes.get(0);
-            tmp4.setName("robot4");
-            IMesh tmp5=meshes.get(1);
-            tmp5.setName("robot5");
-            IMesh tmp0=meshes.get(2);
-            tmp0.setName("robot6");
-            parts = new ArrayList<>();
-            parts.add(tmp0);
-            parts.add(tmp1);
-            parts.add(tmp2);
-            parts.add(tmp3);
-            parts.add(tmp4);
-            parts.add(tmp5);
+			parts = new ArrayList<>();
+			// Ignore 3
+			parts.add(meshes.get(2));
+			parts.add(meshes.get(4));
+			parts.add(meshes.get(5));
+			parts.add(meshes.get(0));
+			parts.add(meshes.get(1));
+			parts.add(meshes.get(6));
+			parts.add(meshes.get(7));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -59,20 +49,25 @@ public class Robot {
 		preRotationTranslations.add(Vec3.ZERO);
 		// Part 2
 		rotations.add(Mat4.ID);
-		rotationAxes.add(Vec3.Z);
-		preRotationTranslations.add(Vec3.ZERO);
+		rotationAxes.add(Vec3.Y);
+//		preRotationTranslations.add(Vec3.ZERO);
+		preRotationTranslations.add(new Vec3(0, 0, 0.375));
 		// Part 3
 		rotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Y);
-		preRotationTranslations.add(new Vec3(0, 0, 0.4));
+		preRotationTranslations.add(new Vec3(0, 0, 0.775));
 		// Part 4
 		rotations.add(Mat4.ID);
-		rotationAxes.add(Vec3.Y);
-		preRotationTranslations.add(new Vec3(0, 0, 0.75));
+		rotationAxes.add(Vec3.Z);
+		preRotationTranslations.add(new Vec3(0, 0.02, 0));
 		// Part 5
 		rotations.add(Mat4.ID);
+		rotationAxes.add(Vec3.Y);
+		preRotationTranslations.add(new Vec3(0, 0, 1.225));
+		// Part 6
+		rotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Z);
-		preRotationTranslations.add(new Vec3(0, 0, 0));
+		preRotationTranslations.add(new Vec3(0, 0.02, 0));
 	}
 	
 	public List<IMesh> getMeshes() {
