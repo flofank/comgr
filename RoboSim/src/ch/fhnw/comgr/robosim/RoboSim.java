@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2013 - 2015 Stefan Muller Arisona, Simon Schubiger, Samuel von Stachelski
- * Copyright (c) 2013 - 2015 FHNW & ETH Zurich
+ * Copyright (c) 2013 - 205 Stefan Muller Arisona, Simon Schubiger, Samuel von Stachelski
+ * Copyright (c) 2013 - 205 FHNW & ETH Zurich
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ public final class RoboSim {
 		RoboSimController controller = new RoboSimController();
 		controller.run(time -> {
 			// Create view
-			IView view = new DefaultView(controller, 50, 50, 512, 512, IView.INTERACTIVE_VIEW, "Robot Simulation");
+			IView view = new DefaultView(controller, 50, 50, 800, 800, IView.INTERACTIVE_VIEW, "Robot Simulation");
 	
 			IScene scene = new DefaultScene(controller);
 			controller.setScene(scene);
@@ -79,16 +79,16 @@ public final class RoboSim {
 			scene.add3DObject(camera);
 			controller.setCamera(view, camera);
 			
-			scene.add3DObject(new DirectionalLight(new Vec3(0, 0, 1), RGB.BLACK, RGB.RED));
-			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.5), RGB.BLACK, RGB.BLUE));
+			scene.add3DObject(new DirectionalLight(new Vec3(0, 0, 1), RGB.WHITE, RGB.WHITE));
+			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.5), RGB.WHITE, RGB.WHITE));
 
 			// Add floor
-			scene.add3DObject(RoboSimMeshUtilities.createFloor(new Vec2(-15, -15), new Vec2(15, 15), 3));
+			scene.add3DObject(RoboSimMeshUtilities.createFloor(new Vec2(-5, -5), new Vec2(5, 5), 5));
 			// Add walls
-			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-15, -15, 0), new Vec3(15, -15, 5), 5));
-			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-15, 15, 0), new Vec3(15, 15, 5), 5));
-			scene.add3DObject(RoboSimMeshUtilities.createWallY(new Vec3(-15, -15, 0), new Vec3(-15, 15, 5), 5));
-			scene.add3DObject(RoboSimMeshUtilities.createWallY(new Vec3(15, -15, 0), new Vec3(15, 15, 5), 5));
+			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-5, -5, 0), new Vec3(5, -5, 5), 5));
+			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-5, 5, 0), new Vec3(5, 5, 5), 5));
+			scene.add3DObject(RoboSimMeshUtilities.createWallY(new Vec3(-5, -5, 0), new Vec3(-5, 5, 5), 5));
+			scene.add3DObject(RoboSimMeshUtilities.createWallY(new Vec3(5, -5, 0), new Vec3(5, 5, 5), 5));
 			
 			controller.initRobot();
 			controller.initButtons();

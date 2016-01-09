@@ -103,4 +103,14 @@ public class Robot {
 		}
 		recalcRotations();
 	}
+
+	public void setAngle(int part, float angle) {
+		System.out.println(angle);
+		Mat4 newRot = Mat4.ID;
+		newRot = newRot.postMultiply(Mat4.translate(preRotationTranslations.get(part).scale(1)));
+		newRot = newRot.postMultiply(Mat4.rotate(angle, rotationAxes.get(part)));
+		newRot = newRot.postMultiply(Mat4.translate(preRotationTranslations.get(part).scale(-1)));
+		rotations.set(part, newRot);
+		recalcRotations();
+	}
 }

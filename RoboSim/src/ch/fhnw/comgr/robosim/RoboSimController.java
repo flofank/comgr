@@ -42,6 +42,7 @@ import ch.fhnw.ether.scene.mesh.IMesh;
 import ch.fhnw.ether.scene.mesh.MeshUtilities;
 import ch.fhnw.ether.scene.mesh.material.ShadedMaterial;
 import ch.fhnw.ether.ui.Button;
+import ch.fhnw.ether.ui.Slider;
 import ch.fhnw.util.color.RGB;
 import ch.fhnw.util.math.Mat4;
 import ch.fhnw.util.math.Vec3;
@@ -92,10 +93,16 @@ public class RoboSimController extends DefaultController {
 	}
 
 	public void initButtons() {
-		getUI().addWidget(new Button(0, 3, "Quit", "Quit", KeyEvent.VK_ESCAPE, (button, v) -> System.exit(0)));
 		getUI().addWidget(new Button(0, 2, "Positioning", "PositioningTool", KeyEvent.VK_P, (button, v) -> setCurrentTool(positioningTool)));
 		getUI().addWidget(new Button(0, 1, "Robot", "RoboterControl", KeyEvent.VK_R, (button, v) -> setCurrentTool(robotTool)));
 		getUI().addWidget(new Button(0, 0, "Add Cube", "Add Cube", KeyEvent.VK_R, (button, v) -> addCube()));
+		getUI().addWidget(new Slider(0, 3, "Robot rotation 1", "Robot Angle 1", 0, (slider, view) -> robot.setAngle(1, slider.getValue() * 360)));
+		getUI().addWidget(new Slider(0, 4, "Robot rotation 2", "Robot Angle 2", 0, (slider, view) -> robot.setAngle(2, slider.getValue() * 360)));
+		getUI().addWidget(new Slider(0, 5, "Robot rotation 3", "Robot Angle 3", 0, (slider, view) -> robot.setAngle(3, slider.getValue() * 360)));
+		getUI().addWidget(new Slider(0, 6, "Robot rotation 4", "Robot Angle 4", 0, (slider, view) -> robot.setAngle(4, slider.getValue() * 360)));
+		getUI().addWidget(new Slider(0, 7, "Robot rotation 5", "Robot Angle 5", 0, (slider, view) -> robot.setAngle(5, slider.getValue() * 360)));
+		getUI().addWidget(new Slider(0, 8, "Robot rotation 6", "Robot Angle 6", 0, (slider, view) -> robot.setAngle(6, slider.getValue() * 360)));
+		
 	}
 
 	public void initRobot() {
@@ -106,6 +113,7 @@ public class RoboSimController extends DefaultController {
 	
 	public void addCube() {
 		IMesh cube = MeshUtilities.createCube(new ShadedMaterial(RGB.BLACK, RGB.BLUE, RGB.GRAY, RGB.WHITE, 10, 1, 1f));
+		cube.setTransform(Mat4.scale( 0.2f));
 		meshes.add(cube);
 		getScene().add3DObject(cube);
 	}
