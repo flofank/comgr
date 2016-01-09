@@ -37,6 +37,7 @@ import ch.fhnw.ether.controller.DefaultController;
 import ch.fhnw.ether.controller.event.IKeyEvent;
 import ch.fhnw.ether.controller.tool.ITool;
 import ch.fhnw.ether.scene.I3DObject;
+import ch.fhnw.ether.scene.light.DirectionalLight;
 import ch.fhnw.ether.scene.light.ILight;
 import ch.fhnw.ether.scene.mesh.IMesh;
 import ch.fhnw.ether.scene.mesh.MeshUtilities;
@@ -50,8 +51,11 @@ import ch.fhnw.util.math.Vec3;
 public class RoboSimController extends DefaultController {
 	private static final float INC_XY = 0.25f;
 	private static final float INC_Z = 0.25f;
+	private static final RGB COLOR = RGB.WHITE;
+	private static final RGB AMBIENT = RGB.BLACK;
 	private List<IMesh> meshes = new ArrayList<>();
-	private ILight light;
+	private ILight light = new DirectionalLight(Vec3.Z, AMBIENT, COLOR);
+	private IMesh lightMesh;
 
     // 2do: state im controller?
     private int angle_bottom = 0;
@@ -75,24 +79,31 @@ public class RoboSimController extends DefaultController {
 	@Override
 	public void keyPressed(IKeyEvent e) {
 		switch (e.getKeyCode()) {
-//            case IKeyEvent.VK_W:
-//                light.setPosition(light.getPosition().add(Vec3.Y.scale(INC_XY)));
-//                break;
-//            case IKeyEvent.VK_S:
-//                light.setPosition(light.getPosition().add(Vec3.Y_NEG.scale(INC_XY)));
-//                break;
-//            case IKeyEvent.VK_A:
-//                light.setPosition(light.getPosition().add(Vec3.X_NEG.scale(INC_XY)));
-//                break;
-//            case IKeyEvent.VK_D:
-//                light.setPosition(light.getPosition().add(Vec3.X.scale(INC_XY)));
-//                break;
+            case IKeyEvent.VK_UP:
+            	lightMesh.setPosition(lightMesh.getPosition().add(Vec3.X.scale(INC_XY)));
+                break;
+            case IKeyEvent.VK_DOWN:
+            	lightMesh.setPosition(lightMesh.getPosition().add(Vec3.X_NEG.scale(INC_XY)));
+                break;
+            case IKeyEvent.VK_RIGHT:
+            	lightMesh.setPosition(lightMesh.getPosition().add(Vec3.Y_NEG.scale(INC_XY)));
+                break;
+            case IKeyEvent.VK_LEFT:
+            	lightMesh.setPosition(lightMesh.getPosition().add(Vec3.Y.scale(INC_XY)));
+                break;
+            case IKeyEvent.VK_PAGE_UP:
+				lightMesh.setPosition(lightMesh.getPosition().add(Vec3.Z.scale(INC_Z)));
+				break;
+			case IKeyEvent.VK_PAGE_DOWN:
+				lightMesh.setPosition(lightMesh.getPosition().add(Vec3.Z_NEG.scale(INC_Z)));
+				break;
             default:
                 super.keyPressed(e);
             }
+			light.setPosition(lightMesh.getPosition());
 	}
 
-	public void initButtons() {
+	public void initWidgets() {
 		getUI().addWidget(new Button(0, 2, "Positioning", "PositioningTool", KeyEvent.VK_P, (button, v) -> setCurrentTool(positioningTool)));
 		getUI().addWidget(new Button(0, 1, "Robot", "RoboterControl", KeyEvent.VK_R, (button, v) -> setCurrentTool(robotTool)));
 		getUI().addWidget(new Button(0, 0, "Add Cube", "Add Cube", KeyEvent.VK_R, (button, v) -> addCube()));
@@ -118,8 +129,11 @@ public class RoboSimController extends DefaultController {
 		getScene().add3DObject(cube);
 	}
 
-	public void setLight(ILight light) {
+	public void setLight(ILight light, IMesh lightMesh) {
 		this.light = light;
+		this.lightMesh = lightMesh;
+		getScene().add3DObjects(light);
+		getScene().add3DObjects(lightMesh);
 	}
 	
 	public void moveObject(I3DObject obj, Vec3 pos) {

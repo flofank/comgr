@@ -41,20 +41,31 @@ import ch.fhnw.ether.scene.IScene;
 import ch.fhnw.ether.scene.camera.Camera;
 import ch.fhnw.ether.scene.camera.ICamera;
 import ch.fhnw.ether.scene.light.DirectionalLight;
+import ch.fhnw.ether.scene.light.ILight;
+import ch.fhnw.ether.scene.light.PointLight;
+import ch.fhnw.ether.scene.light.SpotLight;
+import ch.fhnw.ether.scene.mesh.DefaultMesh;
 import ch.fhnw.ether.scene.mesh.IMesh;
+import ch.fhnw.ether.scene.mesh.IMesh.Flag;
+import ch.fhnw.ether.scene.mesh.geometry.DefaultGeometry;
+import ch.fhnw.ether.scene.mesh.geometry.IGeometry.Primitive;
+import ch.fhnw.ether.scene.mesh.material.ColorMaterial;
 import ch.fhnw.ether.ui.Button;
 import ch.fhnw.ether.view.IView;
 import ch.fhnw.ether.view.gl.DefaultView;
 import ch.fhnw.util.color.RGB;
+import ch.fhnw.util.color.RGBA;
 import ch.fhnw.util.math.Mat4;
 import ch.fhnw.util.math.Vec2;
 import ch.fhnw.util.math.Vec3;
+import ch.fhnw.util.math.geometry.GeodesicSphere;
 
 public final class RoboSim {
 	private static final RGB AMBIENT = RGB.BLACK;
 	private static final RGB COLOR = RGB.WHITE;
 	private float angle = 0;
 	private float speed = 0.3f;
+
 	
 	public static void main(String[] args) {
 		new RoboSim();
@@ -75,12 +86,23 @@ public final class RoboSim {
 			controller.setScene(scene);
 			
 			// Create and add camera
-			ICamera camera = new Camera(new Vec3(-2, 1, 3), Vec3.ZERO);
+			ICamera camera = new Camera(new Vec3(-2, 0, 3), Vec3.ZERO);
 			scene.add3DObject(camera);
 			controller.setCamera(view, camera);
 			
-			scene.add3DObject(new DirectionalLight(new Vec3(0, 0, 1), RGB.WHITE, RGB.WHITE));
-			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.5), RGB.WHITE, RGB.WHITE));
+			// Add first light and light geometry
+			GeodesicSphere s = new GeodesicSphere(4);
+			IMesh lightMesh = new DefaultMesh(new ColorMaterial(RGBA.YELLOW), DefaultGeometry.createV(Primitive.TRIANGLES, s.getTriangles()), Flag.DONT_CAST_SHADOW);
+			lightMesh.setTransform(Mat4.trs(0, 0, 0, 0, 0, 0, 0.1f, 0.1f, 0.1f));
+			lightMesh.setPosition(new Vec3(0, -1, 2));
+//			ILight light = new DirectionalLight(Vec3.Z, AMBIENT, COLOR);
+//			ILight light = new SpotLight(lightMesh.getPosition(), AMBIENT, COLOR, 10, Vec3.Z_NEG, 15, 0);
+			ILight light = new PointLight(lightMesh.getPosition(), AMBIENT, COLOR, 10);
+			light.setPosition(lightMesh.getPosition());
+			controller.setLight(light, lightMesh);
+			
+//			scene.add3DObject(new DirectionalLight(new Vec3(0, 0, 1), RGB.WHITE, RGB.WHITE));
+//			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.5), RGB.WHITE, RGB.WHITE));
 
 			// Add floor
 			scene.add3DObject(RoboSimMeshUtilities.createFloor(new Vec2(-5, -5), new Vec2(5, 5), 5));
@@ -91,7 +113,7 @@ public final class RoboSim {
 			scene.add3DObject(RoboSimMeshUtilities.createWallY(new Vec3(5, -5, 0), new Vec3(5, 5, 5), 5));
 			
 			controller.initRobot();
-			controller.initButtons();
+			controller.initWidgets();
 		});
 	}
 }
