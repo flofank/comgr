@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle.Control;
 
 import ch.fhnw.ether.controller.IController;
 
@@ -95,12 +96,16 @@ public final class RoboSim {
 			IMesh lightMesh = new DefaultMesh(new ColorMaterial(RGBA.YELLOW), DefaultGeometry.createV(Primitive.TRIANGLES, s.getTriangles()), Flag.DONT_CAST_SHADOW);
 			lightMesh.setTransform(Mat4.trs(0, 0, 0, 0, 0, 0, 0.1f, 0.1f, 0.1f));
 			lightMesh.setPosition(new Vec3(0, -1, 2));
-//			ILight light = new DirectionalLight(Vec3.Z, AMBIENT, COLOR);
-//			ILight light = new SpotLight(lightMesh.getPosition(), AMBIENT, COLOR, 10, Vec3.Z_NEG, 15, 0);
-			ILight light = new PointLight(lightMesh.getPosition(), AMBIENT, COLOR, 10);
+			ILight light = new DirectionalLight(Vec3.Z, AMBIENT, COLOR);
+//			ILight light = new PointLight(lightMesh.getPosition(), AMBIENT, COLOR, 10);
 			light.setPosition(lightMesh.getPosition());
 			controller.setLight(light, lightMesh);
 			
+//			ILight light1 = new SpotLight(new Vec3(-4.9, -4.9, 4.9), AMBIENT, COLOR, 10, new Vec3(4.9, 4.9, -4.9), 25, 0);
+//			ILight light2 = new SpotLight(new Vec3(-5, 5, 5), AMBIENT, COLOR, 10, new Vec3(5, -5, -5), 15, 0);
+//			ILight light3 = new SpotLight(new Vec3(4.9, -4.9, 4.9), AMBIENT, COLOR, 10, new Vec3(-4.9, 4.9, -4.9), 25, 0);
+//			ILight light4 = new SpotLight(new Vec3(5, 5, 5), AMBIENT, COLOR, 10, new Vec3(-5, -5, -5), 15, 0);
+//			controller.getScene().add3DObjects(light3, light1);
 //			scene.add3DObject(new DirectionalLight(new Vec3(0, 0, 1), RGB.WHITE, RGB.WHITE));
 //			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.5), RGB.WHITE, RGB.WHITE));
 

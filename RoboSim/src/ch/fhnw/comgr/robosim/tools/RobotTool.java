@@ -4,6 +4,7 @@ import ch.fhnw.comgr.robosim.RoboSimController;
 import ch.fhnw.comgr.robosim.Robot;
 import ch.fhnw.ether.controller.event.IKeyEvent;
 import ch.fhnw.ether.controller.tool.AbstractTool;
+import ch.fhnw.ether.scene.mesh.IMesh;
 
 public class RobotTool extends AbstractTool {
 	private RoboSimController controller;
@@ -56,6 +57,12 @@ public class RobotTool extends AbstractTool {
 		    case IKeyEvent.VK_N:
 		    	robot.rotate(1, -1);
 		    	break;
+		    case IKeyEvent.VK_T:
+		    	tryPickUp();
+		    	break;
+		    case IKeyEvent.VK_R:
+		    	robot.release();
+		    	break;
 		    	// Foot can't be moved
 //		    case IKeyEvent.VK_J:
 //		    	robot.rotate(0, 1);
@@ -69,5 +76,14 @@ public class RobotTool extends AbstractTool {
 			default:
 				super.keyPressed(e);
 		}
+	}
+
+	private void tryPickUp() {
+		System.out.println(robot.getMagnetPos());
+		for (IMesh cube : controller.getCubes()) {
+			if (cube.getBounds().contains(robot.getMagnetPos()) || true) {
+				robot.pickUp(cube);
+			}
 		}
+	}
 }
