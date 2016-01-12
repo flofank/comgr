@@ -132,8 +132,6 @@ public class RoboSimController extends DefaultController {
 
 		cube.setPosition(new Vec3(0.5,.5,0.1));
 		cubes.add(cube);
-
-
 		getScene().add3DObject(cube);
 	}
 
@@ -257,8 +255,5 @@ public class RoboSimController extends DefaultController {
 	public List<IMesh> getCubes() {
 		return cubes;
 	}
-
-
-
 
 }
