@@ -54,7 +54,7 @@ public class RoboSimController extends DefaultController {
 	private static final float INC_Z = 0.25f;
 	private static final RGB COLOR = RGB.WHITE;
 	private static final RGB AMBIENT = RGB.BLACK;
-	private List<IMesh> meshes = new ArrayList<>();
+	private List<IMesh> cubes = new ArrayList<>();
 	private ILight light = new DirectionalLight(Vec3.Z, AMBIENT, COLOR);
 	private IMesh lightMesh;
 
@@ -129,8 +129,11 @@ public class RoboSimController extends DefaultController {
 	public void addCube() {
 		IMesh cube = MeshUtilities.createCube(new ShadedMaterial(RGB.BLACK, RGB.BLUE, RGB.GRAY, RGB.WHITE, 10, 1, 1f));
 		cube.setTransform(Mat4.scale( 0.2f));
-		cube.setPosition(new Vec3(-0.5,-0.5,0));
-		meshes.add(cube);
+
+		cube.setPosition(new Vec3(0.5,.5,0.1));
+		cubes.add(cube);
+
+
 		getScene().add3DObject(cube);
 	}
 
@@ -193,7 +196,7 @@ public class RoboSimController extends DefaultController {
 
 	public boolean obstructed(I3DObject obj) {
 		boolean obstructed = false;
-		for (IMesh mesh : meshes) {
+		for (IMesh mesh : cubes) {
 			obstructed = obstructed || (mesh.getBounds().intersects(obj.getBounds()) && mesh != obj);
 		}
 		return obstructed;
@@ -249,6 +252,10 @@ public class RoboSimController extends DefaultController {
 		//        reso_axis_bottom = reso;
 		reso_axis_mid1 = reso;
 		reso_axis_mid2 = reso;
+	}
+
+	public List<IMesh> getCubes() {
+		return cubes;
 	}
 
 
