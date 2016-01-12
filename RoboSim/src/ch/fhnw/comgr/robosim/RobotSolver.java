@@ -27,48 +27,81 @@ public RobotSolver(double[] d,double[] a,double[] alpha){
 	this.d=d;
 	this.a=a;
 }
+public RobotSolver(){
+	
+}
 
 public List<Mat4> solve(double[] theta){
 	for(int i=1;i<this.theta.length;i++){
 		this.theta[i]=(theta[i])*(Math.PI/180)+theta_init[i];
-//		System.out.println("1: "+theta[1]+" 2: "+theta[2]+" 3: "+theta[3]+" 4: "+theta[4]+" 5: "+theta[5]);	
 	}
 	return makeMatrix();
 }
 public double[] solveAngles(Vec3 pos){
 	double[] theta=new double[8];
-	theta[1]=Math.toDegrees(Math.atan(pos.y/pos.x));
+	if(pos.x<0){
+		theta[1]=Math.toDegrees(Math.atan(pos.y/pos.x))-180;
+	}
+	else{
+		theta[1]=Math.toDegrees(Math.atan(pos.y/pos.x));
+	}
+	
 	double hypotenus=Math.sqrt(Math.pow(pos.x, 2)+Math.pow(pos.y,2));
 	double h_temp=0;
 	double z_temp=0;
 	double alpha=0;
 	double beta=0;
-	
+	double h1=0;
+	double h2=0;
+	double tol=0.014;
+	if(hypotenus==0){
+		theta[2]=90;
+		theta[3]=0;
+	}
+	else{
 	if((l1+l2)<pos.z){
 		
 		double l_temp=l2+l3;
 		beta=Math.atan(hypotenus/l_temp);
-		while((h_temp-hypotenus-pos.z-z_temp) < 0.00001 && (h_temp-hypotenus-pos.z-z_temp) > -0.00001){
+		if(l1>pos.x){
+			beta=Math.toRadians(90);
+		}
+		for(int i=0;i<15;i++){
 			
+			if(((h_temp-hypotenus) < tol && (h_temp-hypotenus) > -tol)){
+				break;
+			}
 			double l_t1=l2*Math.sin(beta);
 			double l_t2=pos.z-l_t1;
-			alpha=Math.acos(l_t2/l3);
-			double t_t1=l3*Math.cos(alpha);
-			double t_t2=hypotenus-t_t1;
-			beta=Math.acos(t_t2/l2);
 			
-			double h1=Math.sin(alpha)*l3;
-			double h2=Math.sin(beta)*l2;
-			double z1=Math.cos(alpha)*l3;
+			double tmp_l=l_t2/l3;
+			while(tmp_l>1){
+				tmp_l=-1;
+			}
+			while(tmp_l<-1){
+				tmp_l+=1;
+			}
+			alpha=Math.asin(tmp_l);
+			double t_t1=l3*Math.sin(alpha);
+			double t_t2=hypotenus-t_t1;
+			tmp_l=t_t2/l2;
+			while(tmp_l>1){
+				tmp_l+=-1;
+			}
+			while(tmp_l<-1){
+				tmp_l+=1;
+			}
+			beta=Math.asin(tmp_l);
+			if(Math.sin(alpha+beta)*l3==h1||Math.sin(beta)*l2==h2){
+				break;
+			}
+			h1=Math.sin(alpha+beta)*l3;
+			h2=Math.sin(beta)*l2;
+			double z1=Math.cos(alpha+beta)*l3;
 			double z2=Math.cos(beta)*l2;
-			if(hypotenus>l3||pos.z>l1){
-				h_temp=h1+h2;
-				z_temp=z1+z2;
-			}
-			else{
-				h_temp=h1-h2;
-				z_temp=z1-z2;
-			}
+			
+			h_temp=h1+h2;
+			
 			
 		}
 	}
@@ -76,47 +109,70 @@ public double[] solveAngles(Vec3 pos){
 		double l_temp=pos.z-l1-l2;
 		alpha=Math.atan(hypotenus/l_temp);
 		
-		while((h_temp-hypotenus-pos.z-z_temp) < 0.00001 && (h_temp-hypotenus-pos.z-z_temp) > -0.00001){
-			double t_t1=l3*Math.cos(alpha);
+		for(int i=0;i<15;i++){
+			
+		if(((h_temp-hypotenus) < tol && (h_temp-hypotenus) > -tol)){
+			break;
+		}
+			double t_t1=l3*Math.sin(alpha);
 			double t_t2=hypotenus-t_t1;
-			beta=Math.acos(t_t2/l2);
+			double tmp_l=t_t2/l2;
+			while(tmp_l>1){
+				tmp_l-=1;
+			}
+			while(tmp_l<-1){
+				tmp_l+=-1;
+			}
+			beta=Math.asin(tmp_l);
 			double l_t1=l2*Math.sin(beta);
 			double l_t2=pos.z-l_t1;
-			alpha=Math.acos(l_t2/l3);
-			double h1=Math.sin(alpha)*l3;
-			double h2=Math.sin(beta)*l2;
+			tmp_l=l_t2/l3;
+			while(tmp_l>1){
+				tmp_l-=1;
+			}
+			while(tmp_l<-1){
+				tmp_l+=-1;
+			}
+			alpha=Math.asin(tmp_l);
+			if(Math.sin(alpha+beta)*l3==h1||Math.sin(beta)*l2==h2){
+				break;
+			}
+			h1=Math.sin(alpha+beta)*l3;
+			h2=Math.sin(beta)*l2;
 			double z1=Math.cos(alpha)*l3;
 			double z2=Math.cos(beta)*l2;
-			if(hypotenus>l3||pos.z>l1){
+			
 				h_temp=h1+h2;
-				z_temp=z1+z2;
-			}
-			else{
-				h_temp=h1-h2;
-				z_temp=z1-z2;
-			}
+				z_temp=z1+z2+l1;
+			
 		}
 		
 	}
-	theta[3]=Math.toDegrees(beta);
-	theta[4]=Math.toDegrees(alpha);
-	System.out.println("alpha: "+theta[4]+" beta: "+theta[3]+" theta: "+theta[1]);
+	theta[2]=90-Math.toDegrees(beta);
+	theta[3]=-Math.toDegrees(alpha);
+	if(theta[3]>0&&theta[3]<90){
+//		theta[3]=90-Math.toDegrees(alpha);
+	}
+	
+	}
+//	System.out.println("x: "+pos.x+" y: "+pos.y+" z: "+pos.z);
+	System.out.println("x: "+pos.x+" y: "+pos.y+" z: "+pos.z+" alpha: "+theta[3]+" beta: "+theta[2]+" theta: "+theta[1]);
 	
 	return theta;
 }
 public List<Vec3> solveBahn(Vec3 p1,Vec3 p2){
-	List<Vec3> Bahn=new ArrayList<Vec3>();
+	List<Vec3> Bahn=new ArrayList<>();
 	double x=p2.x-p1.x;
 	double y=p2.y-p1.y;
 	double z=p2.z-p1.z;
-	for(int i=0;i<500;i++){
-		Bahn.add(i, new Vec3(p2.x-(x/50*i),p2.y-(y/50*i),p2.z-(z/50*i)));
+	for(int i=0;i<100;i++){
+		Bahn.add(i, new Vec3(p1.x+(x/100*i),p1.y+(y/100*i),p1.z+(z/100*i)));
 	}
 	return Bahn;
 }
 
 public List<Mat4> makeMatrix(){
-	List<Mat4> T=new ArrayList<Mat4>();
+	List<Mat4> T=new ArrayList<>();
 	Mat4 normal=new Mat4();
 	for(int i=0;i<theta.length;i++){
 		
