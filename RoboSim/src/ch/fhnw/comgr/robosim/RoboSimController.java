@@ -58,22 +58,13 @@ public class RoboSimController extends DefaultController {
 	private ILight light = new DirectionalLight(Vec3.Z, AMBIENT, COLOR);
 	private IMesh lightMesh;
 
-	// 2do: state im controller?
-	private int angle_bottom = 0;
-	private int angle_mid1 = 0;
-	private int angle_mid2 = 0;
-
 	private Vec3 position=new Vec3(0,0,1.3);
-	private float reso_axis_mid1 = 1;
-	private float reso_axis_mid2 = 1;
 	private boolean sim=true;
 	private Vec3 posCube=new Vec3(-0.5,-0.5,0.4);
 	private ITool positioningTool;
 	private ITool robotTool;
 	private RobotSolver solver=new RobotSolver();
 	private Robot robot;
-
-	//    IKEngine ik;
 
 	public RoboSimController() {
 		positioningTool = new PositioningTool(this);
@@ -146,6 +137,7 @@ public class RoboSimController extends DefaultController {
 	public void moveObject(I3DObject obj, Vec3 pos) {
 
 	}
+
 	public void moveObject(Vec3 pos){
 		List<double[]>angles=new ArrayList<>();
 		angles.addAll(angles.size(),moveObject(new Vec3(0.5, 0.5, 0.7),-55));
@@ -190,57 +182,7 @@ public class RoboSimController extends DefaultController {
 		return obstructed;
 	}
 
-	public void rotateBottom(float delta) {
-		Mat4 transform = Mat4.rotate(angle_bottom+=delta, Vec3.Z);
-		List<IMesh> meshes = getRobotMeshes();
-		for (IMesh m :  meshes) {
-			if (meshes.indexOf(m) != 0) {
-				m.setTransform(transform);
-			}
-		}
-	}
 
-	public void rotateMid1(float delta) {
-		//        Mat4 transform = Mat4.multiply(Mat4.translate(0, 0, 0.273f), Mat4.rotate(angle_bottom+=delta, Vec3.Y));
-		Mat4 transform = Mat4.rotate(angle_bottom+=delta, Vec3.Y);
-		List<IMesh> meshes = getRobotMeshes();
-		//        meshes.get(3).getGeometry().getAttributes()
-		for (IMesh m :  meshes) {
-			if (meshes.indexOf(m) > 2) {
-				m.setTransform(transform);
-			}
-
-		}
-	}
-
-	private void rotateMid2(float delta) {
-		List<IMesh> meshes = getRobotMeshes();
-		for (IMesh m :  meshes) {
-			if (meshes.indexOf(m) > 1) {
-				m.setTransform(Mat4.rotate(angle_mid2+=delta, Vec3.Z));
-			}
-
-		}
-	}
-
-	private List<IMesh> getRobotMeshes() {
-		List<IMesh> robotParts = new ArrayList<>();
-		for (IMesh m : getScene().getMeshes()) {
-			if (m.getName().substring(0, 5).equals("robot"))  {
-				robotParts.add(m);
-			}
-		}
-
-
-		System.out.println(robotParts.size());
-		return robotParts;
-	}
-
-	public void setResolutionAll(float reso) {
-		//        reso_axis_bottom = reso;
-		reso_axis_mid1 = reso;
-		reso_axis_mid2 = reso;
-	}
 
 	public List<IMesh> getCubes() {
 		return cubes;
