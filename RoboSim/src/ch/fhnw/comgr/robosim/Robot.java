@@ -107,10 +107,8 @@ public class Robot {
 	
 	private void recalcRotations() {
 		for (int p = 0; p < parts.size(); p++) {
-			System.out.println("##################################################");
 			Mat4 rot = Mat4.ID;
 			for (int r = 0; r <= p; r++) {
-				System.out.println(rot + " X " + rotations.get(r));
 				rot = rot.postMultiply(rotations.get(r));
 			}
 			parts.get(p).setTransform(rot);
