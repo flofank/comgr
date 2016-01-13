@@ -6,15 +6,23 @@ import ch.fhnw.ether.controller.event.IKeyEvent;
 import ch.fhnw.ether.controller.event.IPointerEvent;
 import ch.fhnw.ether.controller.tool.AbstractTool;
 import ch.fhnw.ether.controller.tool.PickUtilities;
+import ch.fhnw.ether.scene.I3DObject;
 import ch.fhnw.ether.scene.mesh.IMesh;
+import ch.fhnw.util.math.Mat3;
+import ch.fhnw.util.math.Mat4;
 import ch.fhnw.util.math.Vec3;
+
+import java.util.Map;
 
 public class RobotTool extends AbstractTool {
 	private RoboSimController controller;
     private float reso_axis_bottom = 4;
     private Robot robot;
 
-	public RobotTool(RoboSimController controller, Robot robot) {
+    private I3DObject pick;
+
+
+    public RobotTool(RoboSimController controller, Robot robot) {
 		super(controller);
 		this.controller = controller;
 		this.robot = robot;
@@ -88,6 +96,23 @@ public class RobotTool extends AbstractTool {
 			}
 		}
 	}
+
+    @Override
+    public void pointerPressed(IPointerEvent e) {
+        pick(e);
+
+        controller.moveToPos(pick.getPosition().add(new Vec3(0, 0, 0.1)), -90);
+    }
+
+    private void pick(IPointerEvent e) {
+        int x = e.getX();
+        int y = e.getY();
+        Map<Float, I3DObject> pickables = PickUtilities.pickFromScene(PickUtilities.PickMode.POINT, x, y, 0, 0, e.getView());
+        if (!pickables.isEmpty()) {
+            pick = pickables.values().iterator().next();
+            controller.getUI().setMessage(pick.getName());
+        }
+    }
 	
 	private boolean canPickUp(Robot robot, IMesh cube) {
 		Vec3 rd = robot.getMagnetDir();
@@ -107,9 +132,6 @@ public class RobotTool extends AbstractTool {
 		return near(a.x, b.x) && near(a.y, b.y) && near(a.z, b.z);
 	}
 	
-    @Override
-    public void pointerPressed(IPointerEvent e) {
 
-    }
 
 }

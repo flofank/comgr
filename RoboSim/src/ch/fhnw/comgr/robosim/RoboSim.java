@@ -86,7 +86,6 @@ public final class RoboSim {
 
 			IScene scene = new DefaultScene(controller);
 			controller.setScene(scene);
-
 			
 			// Create and add camera
 			ICamera camera = new Camera(new Vec3(-2, 0, 3), Vec3.ZERO);
