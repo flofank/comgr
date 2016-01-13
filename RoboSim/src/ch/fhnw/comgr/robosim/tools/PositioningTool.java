@@ -33,14 +33,9 @@ public class PositioningTool extends PickTool {
 	@Override
 	public void keyPressed(IKeyEvent e) {
 		switch (e.getKeyCode()) {
-//			case IKeyEvent.VK_RIGHT:
-//			case IKeyEvent.VK_LEFT:
-//				if (pick instanceof IMesh) {
-//					float angle = (e.getKeySym() - IKeyEvent.VK_UP) * 3;
-//					((IMesh) pick).setTransform(Mat4.rotate(angle, Vec3.Z));
-//					
-//					((IMesh) pick).setTransform(((IMesh) pick).getTransform().(angle, Vec3.Z));
-//				}
+			case IKeyEvent.VK_A: 
+				controller.addCube();
+				break;
 			case IKeyEvent.VK_UP:
 			case IKeyEvent.VK_DOWN:
 				int s = (e.getKeySym() - IKeyEvent.VK_UP - 1) * -1;

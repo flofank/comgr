@@ -7,6 +7,7 @@ import ch.fhnw.ether.controller.event.IPointerEvent;
 import ch.fhnw.ether.controller.tool.AbstractTool;
 import ch.fhnw.ether.controller.tool.PickUtilities;
 import ch.fhnw.ether.scene.mesh.IMesh;
+import ch.fhnw.util.math.Vec3;
 
 public class RobotTool extends AbstractTool {
 	private RoboSimController controller;
@@ -81,14 +82,31 @@ public class RobotTool extends AbstractTool {
 	}
 
 	private void tryPickUp() {
-		System.out.println(robot.getMagnetPos());
 		for (IMesh cube : controller.getCubes()) {
-			if (cube.getBounds().contains(robot.getMagnetPos()) || true) {
+			if (canPickUp(robot, cube)) {
 				robot.pickUp(cube);
 			}
 		}
 	}
-
+	
+	private boolean canPickUp(Robot robot, IMesh cube) {
+		Vec3 rd = robot.getMagnetDir();
+		// Pick from above
+		if (near(rd.x, 0) && near(rd.y, 0) && near(rd.z, -1)) {
+			return near(robot.getMagnetPos().z, cube.getBounds().getMaxZ());
+		}
+		return false;
+	}
+	
+	private boolean near(float a, float b) {
+		float m = 0.2f;
+		return a - b < m && a - b > -m;
+	}
+	
+	private boolean near(Vec3 a, Vec3 b) {
+		return near(a.x, b.x) && near(a.y, b.y) && near(a.z, b.z);
+	}
+	
     @Override
     public void pointerPressed(IPointerEvent e) {
 

@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2013 - 205 Stefan Muller Arisona, Simon Schubiger, Samuel von Stachelski
- * Copyright (c) 2013 - 205 FHNW & ETH Zurich
+ * Copyright (c) 2013 - 203 Stefan Muller Arisona, Simon Schubiger, Samuel von Stachelski
+ * Copyright (c) 2013 - 203 FHNW & ETH Zurich
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ public final class RoboSim {
 		controller.run(time -> {
 		
 			// Create view
-			IView view = new DefaultView(controller, 50, 50, 800, 800, new Config(ViewType.INTERACTIVE_VIEW, 0, ViewFlag.SMOOTH_LINES), "Robot Simulation");
+			IView view = new DefaultView(controller, 30, 30, 800, 800, new Config(ViewType.INTERACTIVE_VIEW, 0, ViewFlag.SMOOTH_LINES), "Robot Simulation");
 
 			IScene scene = new DefaultScene(controller);
 			controller.setScene(scene);
@@ -103,21 +103,21 @@ public final class RoboSim {
 			light.setPosition(lightMesh.getPosition());
 			controller.setLight(light, lightMesh);
 			
-//			ILight light1 = new SpotLight(new Vec3(-4.9, -4.9, 4.9), AMBIENT, COLOR, 10, new Vec3(4.9, 4.9, -4.9), 25, 0);
-//			ILight light2 = new SpotLight(new Vec3(-5, 5, 5), AMBIENT, COLOR, 10, new Vec3(5, -5, -5), 15, 0);
-//			ILight light3 = new SpotLight(new Vec3(4.9, -4.9, 4.9), AMBIENT, COLOR, 10, new Vec3(-4.9, 4.9, -4.9), 25, 0);
-//			ILight light4 = new SpotLight(new Vec3(5, 5, 5), AMBIENT, COLOR, 10, new Vec3(-5, -5, -5), 15, 0);
+//			ILight light1 = new SpotLight(new Vec3(-4.9, -4.9, 4.9), AMBIENT, COLOR, 10, new Vec3(4.9, 4.9, -4.9), 23, 0);
+//			ILight light2 = new SpotLight(new Vec3(-3, 3, 3), AMBIENT, COLOR, 10, new Vec3(3, -3, -3), 13, 0);
+//			ILight light3 = new SpotLight(new Vec3(4.9, -4.9, 4.9), AMBIENT, COLOR, 10, new Vec3(-4.9, 4.9, -4.9), 23, 0);
+//			ILight light4 = new SpotLight(new Vec3(3, 3, 3), AMBIENT, COLOR, 10, new Vec3(-3, -3, -3), 13, 0);
 //			controller.getScene().add3DObjects(light3, light1);
 //			scene.add3DObject(new DirectionalLight(new Vec3(0, 0, 1), RGB.WHITE, RGB.WHITE));
-//			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.5), RGB.WHITE, RGB.WHITE));
+//			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.3), RGB.WHITE, RGB.WHITE));
 
 			// Add floor
-			scene.add3DObject(RoboSimMeshUtilities.createFloor(new Vec2(-5, -5), new Vec2(5, 5), 1));
+			scene.add3DObject(RoboSimMeshUtilities.createFloor(new Vec2(-3, -3), new Vec2(3, 3), 1));
 			// Add walls
-			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-5, -5, 0), new Vec3(5, -5, 5), 5));
-			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-5, 5, 0), new Vec3(5, 5, 5), 5));
-			scene.add3DObject(RoboSimMeshUtilities.createWallY(new Vec3(-5, -5, 0), new Vec3(-5, 5, 5), 5));
-			scene.add3DObject(RoboSimMeshUtilities.createWallY(new Vec3(5, -5, 0), new Vec3(5, 5, 5), 5));
+			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-3, -3, 0), new Vec3(3, -3, 3), 3));
+			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-3, 3, 0), new Vec3(3, 3, 3), 3));
+			scene.add3DObject(RoboSimMeshUtilities.createWallY(new Vec3(-3, -3, 0), new Vec3(-3, 3, 3), 3));
+			scene.add3DObject(RoboSimMeshUtilities.createWallY(new Vec3(3, -3, 0), new Vec3(3, 3, 3), 3));
 			
 			controller.initRobot();
 			controller.initWidgets();

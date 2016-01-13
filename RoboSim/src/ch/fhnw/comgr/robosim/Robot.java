@@ -15,6 +15,7 @@ import ch.fhnw.ether.scene.mesh.material.ShadedMaterial;
 import ch.fhnw.ether.scene.mesh.material.Texture;
 import ch.fhnw.util.color.RGB;
 import ch.fhnw.util.color.RGBA;
+import ch.fhnw.util.math.Mat3;
 import ch.fhnw.util.math.Mat4;
 import ch.fhnw.util.math.Vec3;
 
@@ -25,6 +26,7 @@ public class Robot {
 	private List<IMesh> parts;
 	private IMesh obj;
 	private List<Mat4> rotations;
+	private List<Mat4> cubeRotations;
 	private List<Vec3> rotationAxes;
 	private List<Vec3> preRotationTranslations;
 	
@@ -55,35 +57,43 @@ public class Robot {
 		}
 		// Init rotations matrixes
 		rotations = new ArrayList<>();
+		cubeRotations = new ArrayList<>();
 		rotationAxes = new ArrayList<>();
 		preRotationTranslations = new ArrayList<>();
 		// Part 0
 		rotations.add(Mat4.ID);
+		cubeRotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Z);
 		preRotationTranslations.add(Vec3.ZERO);
 		// Part 1
 		rotations.add(Mat4.ID);
+		cubeRotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Z);
 		preRotationTranslations.add(Vec3.ZERO);
 		// Part 2
 		rotations.add(Mat4.ID);
+		cubeRotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Y);
 //		preRotationTranslations.add(Vec3.ZERO);
 		preRotationTranslations.add(new Vec3(0, 0, 0.375));
 		// Part 3
 		rotations.add(Mat4.ID);
+		cubeRotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Y);
 		preRotationTranslations.add(new Vec3(0, 0, 0.775));
 		// Part 4
 		rotations.add(Mat4.ID);
+		cubeRotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Z);
 		preRotationTranslations.add(new Vec3(0, 0.02, 0));
 		// Part 5
 		rotations.add(Mat4.ID);
+		cubeRotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Y);
 		preRotationTranslations.add(new Vec3(0, 0, 1.225));
 		// Part 6
 		rotations.add(Mat4.ID);
+		cubeRotations.add(Mat4.ID);
 		rotationAxes.add(Vec3.Z);
 		preRotationTranslations.add(new Vec3(0, 0.02, 0));
 	}
@@ -102,6 +112,7 @@ public class Robot {
 		newRot = newRot.postMultiply(Mat4.rotate(angle, rotationAxes.get(part)));
 		newRot = newRot.postMultiply(Mat4.translate(preRotationTranslations.get(part).scale(-1)));
 		rotations.set(part, newRot);
+		cubeRotations.set(part, cubeRotations.get(part).postMultiply(Mat4.rotate(angle, rotationAxes.get(part))));
 		recalcRotations();
 	}
 	
@@ -114,20 +125,20 @@ public class Robot {
 			parts.get(p).setTransform(rot);
 		}
 		if (obj != null) {
-			obj.setPosition(getMagnetPos());
-//			Mat4 rot = Mat4.ID;
-//			rot = rot.postMultiply(Mat4.translate(new Vec3(0,0,1.392)));
-//			rot = rot.postMultiply(Mat4.scale(0.2f));
-//			for (int r = 0; r < parts.size(); r++) {
-//				rot = rot.postMultiply(rotations.get(r));
-//			}
-//			obj.setTransform(rot);
+			obj.setPosition(getMagnetPos().add(getMagnetDir().normalize().scale(0.1f)));
+			Mat4 rot = Mat4.ID;
+			rot = rot.postMultiply(Mat4.scale(0.2f));
+			for (int r = 0; r < parts.size(); r++) {
+				rot = rot.postMultiply(cubeRotations.get(r));
+			}
+			obj.setTransform(rot);
 		}
 	}
 
 	public void reset() {
 		for (int i = 0; i < rotations.size(); i++) {
 			rotations.set(i, Mat4.ID);
+			cubeRotations.set(i, Mat4.ID);
 		}
 		recalcRotations();
 	}
@@ -138,6 +149,7 @@ public class Robot {
 		newRot = newRot.postMultiply(Mat4.rotate(angle, rotationAxes.get(part)));
 		newRot = newRot.postMultiply(Mat4.translate(preRotationTranslations.get(part).scale(-1)));
 		rotations.set(part, newRot);
+		cubeRotations.set(part, Mat4.rotate(angle, rotationAxes.get(part)));
 		recalcRotations();
 	}
 
@@ -148,7 +160,7 @@ public class Robot {
 
 	public void pickUp(IMesh object) {
 		obj = object;
-		obj.setPosition(getMagnetPos());
+		obj.setPosition(getMagnetPos().add(getMagnetDir().normalize().scale(0.1f)));
 		System.out.println("Picked up " + obj.getName());
 	}
 
@@ -163,6 +175,7 @@ public class Robot {
 		for (int r = 0; r < parts.size(); r++) {
 			look = look.postMultiply(rotations.get(r));
 		}
-		return new Vec3(look.m02, look.m12, look.m22);
+		Vec3 dir = new Vec3(look.m02, look.m12, look.m22);
+		return dir.normalize();
 	}
 }
