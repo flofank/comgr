@@ -3,7 +3,9 @@ package ch.fhnw.comgr.robosim.tools;
 import ch.fhnw.comgr.robosim.RoboSimController;
 import ch.fhnw.comgr.robosim.Robot;
 import ch.fhnw.ether.controller.event.IKeyEvent;
+import ch.fhnw.ether.controller.event.IPointerEvent;
 import ch.fhnw.ether.controller.tool.AbstractTool;
+import ch.fhnw.ether.controller.tool.PickUtilities;
 import ch.fhnw.ether.scene.mesh.IMesh;
 
 public class RobotTool extends AbstractTool {
@@ -86,4 +88,10 @@ public class RobotTool extends AbstractTool {
 			}
 		}
 	}
+
+    @Override
+    public void pointerPressed(IPointerEvent e) {
+
+    }
+
 }

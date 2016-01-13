@@ -36,6 +36,7 @@ import ch.fhnw.comgr.robosim.tools.RobotTool;
 import ch.fhnw.ether.controller.DefaultController;
 import ch.fhnw.ether.controller.event.IEventScheduler;
 import ch.fhnw.ether.controller.event.IKeyEvent;
+import ch.fhnw.ether.controller.event.IPointerEvent;
 import ch.fhnw.ether.controller.tool.ITool;
 import ch.fhnw.ether.scene.I3DObject;
 import ch.fhnw.ether.scene.light.DirectionalLight;
@@ -97,20 +98,22 @@ public class RoboSimController extends DefaultController {
 		light.setPosition(lightMesh.getPosition());
 	}
 
-	public void initWidgets() {
-		getUI().addWidget(new Button(0, 9, "Move Cube", "CubeTool", KeyEvent.VK_P, (button, v) -> moveObject(posCube)));
 
-		getUI().addWidget(new Button(0, 2, "Positioning", "PositioningTool", KeyEvent.VK_P, (button, v) -> setCurrentTool(positioningTool)));
-		getUI().addWidget(new Button(0, 1, "Robot", "RoboterControl", KeyEvent.VK_R, (button, v) -> setCurrentTool(robotTool)));
-		getUI().addWidget(new Button(0, 0, "Add Cube", "Add Cube", KeyEvent.VK_R, (button, v) -> addCube()));
-		getUI().addWidget(new Slider(0, 3, "Robot rotation 1", "Robot Angle 1", 0, (slider, view) -> robot.setAngle(1, slider.getValue() * 360)));
-		getUI().addWidget(new Slider(0, 4, "Robot rotation 2", "Robot Angle 2", 0, (slider, view) -> robot.setAngle(2, slider.getValue() * 360)));
-		getUI().addWidget(new Slider(0, 5, "Robot rotation 3", "Robot Angle 3", 0, (slider, view) -> robot.setAngle(3, slider.getValue() * 360)));
-		getUI().addWidget(new Slider(0, 6, "Robot rotation 4", "Robot Angle 4", 0, (slider, view) -> robot.setAngle(4, slider.getValue() * 360)));
-		getUI().addWidget(new Slider(0, 7, "Robot rotation 5", "Robot Angle 5", 0, (slider, view) -> robot.setAngle(5, slider.getValue() * 360)));
-		getUI().addWidget(new Slider(0, 8, "Robot rotation 6", "Robot Angle 6", 0, (slider, view) -> robot.setAngle(6, slider.getValue() * 360)));
+    public void initWidgets() {
+        getUI().addWidget(new Button(0, 0, "Reset", "ResetButton", KeyEvent.VK_R, (button, v) -> robot.reset()));
+        getUI().addWidget(new Button(0, 1, "Robot", "RoboterControl", KeyEvent.VK_R, (button, v) -> setCurrentTool(robotTool)));
+        getUI().addWidget(new Button(0, 2, "Position", "PositioningTool", KeyEvent.VK_P, (button, v) -> setCurrentTool(positioningTool)));
+        getUI().addWidget(new Button(0, 3, "Animate", "AnimationButton", KeyEvent.VK_P, (button, v) -> moveObject(posCube)));
+        getUI().addWidget(new Slider(0, 4, "Robot rotation 1", "Robot Angle 1", 0, (slider, view) -> robot.setAngle(1, slider.getValue() * 360)));
+		getUI().addWidget(new Slider(0, 5, "Robot rotation 2", "Robot Angle 2", 0, (slider, view) -> robot.setAngle(2, slider.getValue() * 360)));
+		getUI().addWidget(new Slider(0, 6, "Robot rotation 3", "Robot Angle 3", 0, (slider, view) -> robot.setAngle(3, slider.getValue() * 360)));
+		getUI().addWidget(new Slider(0, 7, "Robot rotation 4", "Robot Angle 4", 0, (slider, view) -> robot.setAngle(4, slider.getValue() * 360)));
+		getUI().addWidget(new Slider(0, 8, "Robot rotation 5", "Robot Angle 5", 0, (slider, view) -> robot.setAngle(5, slider.getValue() * 360)));
+		getUI().addWidget(new Slider(0, 9, "Robot rotation 6", "Robot Angle 6", 0, (slider, view) -> robot.setAngle(6, slider.getValue() * 360)));
 
-	}
+
+
+    }
 
 	public void initRobot() {
 		robot = Robot.getInstance(); 
