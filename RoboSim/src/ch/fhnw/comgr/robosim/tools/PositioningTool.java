@@ -25,6 +25,8 @@ public class PositioningTool extends PickTool {
 	private RoboSimController controller;
 	private I3DObject pick;
 
+    boolean alt = false;
+
 	public PositioningTool(RoboSimController controller) {
 		super(controller);
 		this.controller = controller;
@@ -40,15 +42,17 @@ public class PositioningTool extends PickTool {
 			case IKeyEvent.VK_DOWN:
 				int s = (e.getKeySym() - IKeyEvent.VK_UP - 1) * -1;
 				pick.setPosition(pick.getPosition().add(new Vec3(0,0,s)));
-				break;				
+				break;
+
 			default:
 				super.keyPressed(e);
 		}
 	}
-	
-	@Override
+
+    @Override
 	public void pointerPressed(IPointerEvent e) {
 		pick(e);
+        controller.moveObject(pick.getPosition(), 45);
 	}
 	
 	@Override

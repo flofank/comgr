@@ -124,7 +124,6 @@ public class RoboSimController extends DefaultController {
 	public void addCube() {
 		IMesh cube = MeshUtilities.createCube(new ShadedMaterial(RGB.BLACK, RGB.BLUE, RGB.GRAY, RGB.WHITE, 10, 1, 1f));
 		cube.setTransform(Mat4.scale( 0.2f));
-
 		cube.setPosition(new Vec3(0.5,.5,0.1));
 		cubes.add(cube);
 		getScene().add3DObject(cube);
@@ -151,11 +150,21 @@ public class RoboSimController extends DefaultController {
 		angles.addAll(angles.size(),moveObject(new Vec3(0, 0, 1.23456),-55));
 		simulation(angles);
 	}
+
+
+
 	public List<double[]> moveObject(Vec3 pos,double theta) {
 		List<double[]>angles=solver.makeLine(position, pos, theta);
 		position=pos;
 		return angles;
 	}
+
+    public void moveToPos(Vec3 pos, double theta){
+        List<double[]>angles=new ArrayList<>();
+        angles.addAll(angles.size(),moveObject(pos,theta));
+        simulation(angles);
+    }
+
 	public void simulation(List<double[]>angles) {
 
 		this.animate(new IEventScheduler.IAnimationAction() {
