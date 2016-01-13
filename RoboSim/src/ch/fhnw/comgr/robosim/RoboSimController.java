@@ -63,13 +63,14 @@ public class RoboSimController extends DefaultController {
 	private int angle_mid1 = 0;
 	private int angle_mid2 = 0;
 
+	private Vec3 position=new Vec3(0,0,1.3);
 	private float reso_axis_mid1 = 1;
 	private float reso_axis_mid2 = 1;
-
+	private boolean sim=true;
 	private Vec3 posCube=new Vec3(-0.5,-0.5,0.4);
 	private ITool positioningTool;
 	private ITool robotTool;
-
+	private RobotSolver solver=new RobotSolver();
 	private Robot robot;
 
 	//    IKEngine ik;
@@ -143,34 +144,25 @@ public class RoboSimController extends DefaultController {
 	}
 
 	public void moveObject(I3DObject obj, Vec3 pos) {
-		RobotSolver solver=new RobotSolver();
-
-
-		List<Vec3>	Bahn = solver.solveBahn(new Vec3(0, 0, 1.23456), new Vec3(0.5, 0.5, 0.2));
-		for(int i=0;i<Bahn.size();i++){
-			solver.solveAngles(Bahn.get(i));
-		}
 
 	}
-	public void moveObject(Vec3 pos) {
-		RobotSolver solver=new RobotSolver();
+	public void moveObject(Vec3 pos){
 		List<double[]>angles=new ArrayList<>();
-		int pointer=0;
-		List<Vec3>	Bahn1 = solver.solveBahn(new Vec3(0, 0, 1.23456), new Vec3(0.5, 0.5, 0.4));
-		List<Vec3>	Bahn2 = solver.solveBahn(new Vec3(0.5, 0.5, 0.4), new Vec3(0.5, -0.5, 1));
-		List<Vec3>	Bahn3 = solver.solveBahn(new Vec3(0.5, -0.5, 1), pos);
-		for(int i=0;i<Bahn1.size();i++){
-			angles.add(pointer, solver.solveAngles(Bahn1.get(i)));
-			pointer++;
-		}
-		for(int i=0;i<Bahn2.size();i++){
-			angles.add(pointer, solver.solveAngles(Bahn2.get(i)));
-			pointer++;
-		}
-		for(int i=0;i<Bahn3.size();i++){
-			angles.add(pointer, solver.solveAngles(Bahn3.get(i)));
-			pointer++;
-		}
+		angles.addAll(angles.size(),moveObject(new Vec3(0.5, 0.5, 0.7),-55));
+		angles.addAll(angles.size(),moveObject(new Vec3(0.5, 0.5, 0),180));
+		angles.addAll(angles.size(),moveObject(new Vec3(0.5, 0.5, 0.7),180));
+		angles.addAll(angles.size(),moveObject(new Vec3(0.5, -0.5, 0.7),180));
+		angles.addAll(angles.size(),moveObject(pos,180));
+		angles.addAll(angles.size(),moveObject(new Vec3(0, 0, 1.23456),-55));
+		simulation(angles);
+	}
+	public List<double[]> moveObject(Vec3 pos,double theta) {
+		List<double[]>angles=solver.makeLine(position, pos, theta);
+		position=pos;
+		return angles;
+	}
+	public void simulation(List<double[]>angles) {
+
 		this.animate(new IEventScheduler.IAnimationAction() {
 			private int inter=0;
 
@@ -179,9 +171,7 @@ public class RoboSimController extends DefaultController {
 				if(inter<angles.size()){
 					for(int i=1;i<angles.get(inter).length-1;i++){
 						robot.setAngle(i, (float)angles.get(inter)[i]);
-
 					}
-
 				}
 				else{
 					return;

@@ -20,7 +20,7 @@ double[] d;
 double[] a;
 double l1=0.384;
 double l2=0.386;
-double l3=0.46456;
+double l3=0.53;
 double b[]={0,0,0,-0.0,0,0,0,0};
 public RobotSolver(double[] d,double[] a,double[] alpha){
 	this.alpha=alpha;
@@ -160,7 +160,30 @@ public double[] solveAngles(Vec3 pos){
 	
 	return theta;
 }
-public List<Vec3> solveBahn(Vec3 p1,Vec3 p2){
+public double[] solveThetas(Vec3 pos, double t){
+	double[] theta=new double[8];
+	if(pos.x<0){
+		theta[1]=Math.toDegrees(Math.atan(pos.y/pos.x))-180;
+	}
+	else{
+		theta[1]=Math.toDegrees(Math.atan(pos.y/pos.x));
+	}
+	
+	double t_x=Math.sqrt(Math.pow(pos.x, 2)+Math.pow(pos.y,2));
+	double t_z=pos.z-l1;
+	double temp1=(Math.pow(t_x, 2)+Math.pow(t_z, 2)-Math.pow(l2, 2)-Math.pow(l3, 2))/(2*l2*l3);
+	double theta2_pos=Math.atan2(Math.sqrt(1-temp1), temp1);
+	double theta2_neg=Math.atan2(-Math.sqrt(1-temp1), temp1);
+	double temp2_pos=Math.cos(theta2_pos)*l3+l2;
+	double theta1=Math.atan2(t_z, t_x)+Math.atan2(Math.sqrt(Math.pow(t_z, 2)+Math.pow(t_x, 2)-Math.pow(temp2_pos, 2)), temp2_pos);
+	
+
+	theta[2]=90-Math.toDegrees(theta1);
+	theta[3]=-Math.toDegrees(theta2_neg);
+	theta[5]=Math.toDegrees(t)-theta[2]-theta[3]-55;
+	return theta;
+}
+public List<Vec3> solveLine(Vec3 p1,Vec3 p2){
 	List<Vec3> Bahn=new ArrayList<>();
 	double x=p2.x-p1.x;
 	double y=p2.y-p1.y;
@@ -169,6 +192,16 @@ public List<Vec3> solveBahn(Vec3 p1,Vec3 p2){
 		Bahn.add(i, new Vec3(p1.x+(x/100*i),p1.y+(y/100*i),p1.z+(z/100*i)));
 	}
 	return Bahn;
+}
+public List<double[]> makeLine(Vec3 p1,Vec3 p2,double theta){
+	
+	List<Vec3>	Bahn = this.solveLine(p1, p2);
+	List<double[]>	angles=new ArrayList<>();
+	for(int i=0;i<Bahn.size();i++){
+		angles.add(i,this.solveThetas(Bahn.get(i),theta));
+		
+	}
+	return angles;
 }
 
 public List<Mat4> makeMatrix(){
