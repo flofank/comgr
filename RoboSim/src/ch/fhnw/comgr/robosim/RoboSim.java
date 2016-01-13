@@ -52,6 +52,9 @@ import ch.fhnw.ether.scene.mesh.geometry.IGeometry.Primitive;
 import ch.fhnw.ether.scene.mesh.material.ColorMaterial;
 
 import ch.fhnw.ether.view.IView;
+import ch.fhnw.ether.view.IView.Config;
+import ch.fhnw.ether.view.IView.ViewFlag;
+import ch.fhnw.ether.view.IView.ViewType;
 import ch.fhnw.ether.view.gl.DefaultView;
 import ch.fhnw.util.color.RGB;
 import ch.fhnw.util.color.RGBA;
@@ -79,8 +82,7 @@ public final class RoboSim {
 		controller.run(time -> {
 		
 			// Create view
-			IView view = new DefaultView(controller, 50, 50, 800, 800, IView.INTERACTIVE_VIEW, "Robot Simulation");
-	
+			IView view = new DefaultView(controller, 50, 50, 800, 800, new Config(ViewType.INTERACTIVE_VIEW, 0, ViewFlag.SMOOTH_LINES), "Robot Simulation");
 
 			IScene scene = new DefaultScene(controller);
 			controller.setScene(scene);
@@ -110,7 +112,7 @@ public final class RoboSim {
 //			scene.add3DObject(new DirectionalLight(new Vec3(0, 1, 0.5), RGB.WHITE, RGB.WHITE));
 
 			// Add floor
-			scene.add3DObject(RoboSimMeshUtilities.createFloor(new Vec2(-5, -5), new Vec2(5, 5), 5));
+			scene.add3DObject(RoboSimMeshUtilities.createFloor(new Vec2(-5, -5), new Vec2(5, 5), 1));
 			// Add walls
 			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-5, -5, 0), new Vec3(5, -5, 5), 5));
 			scene.add3DObject(RoboSimMeshUtilities.createWallX(new Vec3(-5, 5, 0), new Vec3(5, 5, 5), 5));
