@@ -140,6 +140,8 @@ public class RoboSimController extends DefaultController {
 	public void moveObject(I3DObject obj, Vec3 pos) {
 
 	}
+	
+	
 
 	public void moveObject(Vec3 pos){
 		List<double[]>angles=new ArrayList<>();
