@@ -114,13 +114,14 @@ public class Robot {
 			parts.get(p).setTransform(rot);
 		}
 		if (obj != null) {
-			Mat4 rot = Mat4.ID;
-			rot = rot.postMultiply(Mat4.translate(new Vec3(0,0,1.392)));
-			rot = rot.postMultiply(Mat4.scale(0.2f));
-			for (int r = 0; r < parts.size(); r++) {
-				rot = rot.postMultiply(rotations.get(r));
-			}
-			obj.setTransform(rot);
+			obj.setPosition(getMagnetPos());
+//			Mat4 rot = Mat4.ID;
+//			rot = rot.postMultiply(Mat4.translate(new Vec3(0,0,1.392)));
+//			rot = rot.postMultiply(Mat4.scale(0.2f));
+//			for (int r = 0; r < parts.size(); r++) {
+//				rot = rot.postMultiply(rotations.get(r));
+//			}
+//			obj.setTransform(rot);
 		}
 	}
 
@@ -147,7 +148,7 @@ public class Robot {
 
 	public void pickUp(IMesh object) {
 		obj = object;
-		obj.setPosition(new Vec3(0,0,1.392));
+		obj.setPosition(getMagnetPos());
 		System.out.println("Picked up " + obj.getName());
 	}
 
