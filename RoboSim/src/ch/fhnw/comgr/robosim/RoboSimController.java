@@ -150,7 +150,7 @@ public class RoboSimController extends DefaultController {
 	public void moveObject(Vec3 pos){
 		List<double[]>angles=new ArrayList<>();
 		angles.addAll(angles.size(),moveObject(new Vec3(0.5, 0.5, 0.7),-55));
-		angles.addAll(angles.size(),moveObject(new Vec3(0.5, 0.5, 0),180));
+		angles.addAll(angles.size(),moveObject(new Vec3(0.5, 0.5, 0.4),180));
 		angles.addAll(angles.size(),moveObject(new Vec3(0.5, 0.5, 0.7),180));
 		angles.addAll(angles.size(),moveObject(new Vec3(0.5, -0.5, 0.7),180));
 		angles.addAll(angles.size(),moveObject(pos,180));
