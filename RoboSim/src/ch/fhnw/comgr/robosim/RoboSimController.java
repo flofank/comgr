@@ -66,6 +66,7 @@ public class RoboSimController extends DefaultController {
 	private ITool robotTool;
 	private RobotSolver solver=new RobotSolver();
 	private Robot robot;
+    private IEventScheduler.IAnimationAction curentAnimation;
 
 	public RoboSimController() {
 		positioningTool = new PositioningTool(this);
@@ -100,7 +101,7 @@ public class RoboSimController extends DefaultController {
 
 
     public void initWidgets() {
-        getUI().addWidget(new Button(0, 0, "Reset", "ResetButton", KeyEvent.VK_R, (button, v) -> robot.reset()));
+        getUI().addWidget(new Button(0, 0, "Reset", "ResetButton", KeyEvent.VK_R, (button, v) -> reset()));
         getUI().addWidget(new Button(0, 1, "Robot", "RoboterControl", KeyEvent.VK_R, (button, v) -> setCurrentTool(robotTool)));
         getUI().addWidget(new Button(0, 2, "Position", "PositioningTool", KeyEvent.VK_P, (button, v) -> setCurrentTool(positioningTool)));
         getUI().addWidget(new Button(0, 3, "Animate", "AnimationButton", KeyEvent.VK_P, (button, v) -> moveObject(posCube)));
@@ -111,8 +112,6 @@ public class RoboSimController extends DefaultController {
 		getUI().addWidget(new Slider(0, 8, "Robot rotation 5", "Robot Angle 5", 0, (slider, view) -> robot.setAngle(5, slider.getValue() * 360)));
 		getUI().addWidget(new Slider(0, 9, "Robot rotation 6", "Robot Angle 6", 0, (slider, view) -> robot.setAngle(6, slider.getValue() * 360)));
 
-
-
     }
 
 	public void initRobot() {
@@ -120,6 +119,13 @@ public class RoboSimController extends DefaultController {
 		robotTool = new RobotTool(this, robot);
 		getScene().add3DObjects(robot.getMeshes());
 	}
+
+    public void reset() {
+        kill(curentAnimation);
+        robot.reset();
+
+    }
+
 
 	public void addCube() {
 		IMesh cube = MeshUtilities.createCube(new ShadedMaterial(RGB.BLACK, RGB.BLUE, RGB.GRAY, RGB.WHITE, 10, 1, 1f));
@@ -139,7 +145,6 @@ public class RoboSimController extends DefaultController {
 	public void moveObject(I3DObject obj, Vec3 pos) {
 
 	}
-	
 	
 
 	public void moveObject(Vec3 pos){
@@ -168,23 +173,23 @@ public class RoboSimController extends DefaultController {
     }
 
 	public void simulation(List<double[]>angles) {
+        curentAnimation = new IEventScheduler.IAnimationAction() {
+            private int inter=0;
 
-		this.animate(new IEventScheduler.IAnimationAction() {
-			private int inter=0;
-
-			@Override
-			public void run(double time, double interval) {
-				if(inter<angles.size()){
-					for(int i=1;i<angles.get(inter).length-1;i++){
-						robot.setAngle(i, (float)angles.get(inter)[i]);
-					}
-				}
-				else{
-					return;
-				}
-				inter++;
-			}
-		});
+            @Override
+            public void run(double time, double interval) {
+                if(inter<angles.size()){
+                    for(int i=1;i<angles.get(inter).length-1;i++){
+                        robot.setAngle(i, (float)angles.get(inter)[i]);
+                    }
+                }
+                else{
+                    return;
+                }
+                inter++;
+            }
+        };
+		this.animate(curentAnimation);
 
 	}
 
